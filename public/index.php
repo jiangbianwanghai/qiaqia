@@ -20,6 +20,8 @@ try {
      */
     include APP_PATH . "/app/config/services.php";
 
+    include APP_PATH . '/app/config/router.php';
+
     /**
      * Handle the request
      */
