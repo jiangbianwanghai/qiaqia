@@ -22,6 +22,8 @@ class IndexController extends ControllerBase
         if (isset($accountArr[$account])) {
             if ($accountArr[$account] == $password) {
                 $json = ['code' => 0, 'msg' => null];
+                $auth = serialize(['account' => $account]);
+                $this->cookies->set('auth', $auth, time() + 15 * 86400);
             } else {
                 $json = ['code' => 2, 'msg' => '密码不正确'];
             }
