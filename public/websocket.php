@@ -3,6 +3,7 @@ $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
 
 $redis->set("fd", "[]"); //存客户端
+
 $redis->set("kfid", "[]"); //存客服端标识
 $redis->set("khid", "[]"); //存客户端标识
 $redis->set("fdtokf", "[]"); //fd到客服标识映射
