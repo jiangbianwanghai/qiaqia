@@ -51,7 +51,7 @@ $server->on('message', function ($server, $frame) use ($redis) {
     /**
      * 将客服的帐号与fd对应起来
      */
-    if ($data['kf']) {
+    if (!empty($data['kf'])) {
         $kfid[$data['uid']] = $frame->fd;
         $kfid               = json_encode($kfid);
         $redis->set("kfid", $kfid);
@@ -59,7 +59,7 @@ $server->on('message', function ($server, $frame) use ($redis) {
     /**
      * 将客户端的标识与fd对应起来
      */
-    if ($data['kh']) {
+    if (!empty($data['kh'])) {
         $khid[$data['uid']] = $frame->fd;
         $khid               = json_encode($khid);
         $redis->set("khid", $khid);
