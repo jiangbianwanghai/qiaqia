@@ -175,7 +175,7 @@
                       </div>
                     </div>
                     <div class="clearfix"></div>
-                    <div class="lv-footer ms-reply"> <textarea rows="10" placeholder="Write messages..."></textarea> <button class=""><span class="glyphicon glyphicon-send"></span></button>
+                    <div class="lv-footer ms-reply"> <textarea rows="10" id="text" placeholder="Write messages..."></textarea> <button id="push_button" class=""><span class="glyphicon glyphicon-send"></span></button>
                     </div>
                   </div>
                 </div>

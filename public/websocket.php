@@ -8,6 +8,7 @@ $redis->set("khid", "[]"); //存客户端标识
 $redis->set("fdtokf", "[]"); //fd到客服标识映射
 $redis->set("fdtokh", "[]"); //fd到客户端标识映射
 $redis->set("khtokf", "[]"); //客户端到客服端的映射
+$redis->set("kftokh", "[]"); //客服端到客户端的映射
 
 /**
  * swoole从1.7.9开始增加了对WebSocket的支持
@@ -84,6 +85,9 @@ $server->on('message', function ($server, $frame) use ($redis) {
             $khtokf[$data['uid']] = '1101';
             $khtokf               = json_encode($khtokf);
             $redis->set("khtokf", $khtokf);
+            $kftokh['1101'] = $data['uid'];
+            $kftokh         = json_encode($kftokh);
+            $redis->set("kftokh", $kftokh);
         }
     }
 
@@ -92,14 +96,44 @@ $server->on('message', function ($server, $frame) use ($redis) {
      */
     if (!empty($data['post'])) {
         $msg = strip_tags($data['msg']);
+        //客户端发送消息给客服
         if ($data['role'] == 'kh') {
             $arr    = json_decode($redis->get("fdtokh"), true);
             $khtokf = json_decode($redis->get("khtokf"), true);
             $kfid   = json_decode($redis->get("kfid"), true);
             echo $arr[$frame->fd] . " to " . $khtokf[$arr[$frame->fd]] . " " . $msg . PHP_EOL;
-            $server->push($frame->fd, $msg); //发给客户端信息
+            $pushMsg = json_encode([
+                'me'   => 1,
+                'msg'  => $msg,
+                'time' => date("Y-m-d H:i:s"),
+            ]);
+            $server->push($frame->fd, $pushMsg); //发给客户端信息
             echo $kfid[$khtokf[$arr[$frame->fd]]] . PHP_EOL;
-            $server->push($kfid[$khtokf[$arr[$frame->fd]]], $msg); //发给客服端消息
+            $pushMsg = json_encode([
+                'me'   => 0,
+                'msg'  => $msg,
+                'time' => date("Y-m-d H:i:s"),
+            ]);
+            $server->push($kfid[$khtokf[$arr[$frame->fd]]], $pushMsg); //发给客服端消息
+        }
+        if ($data['role'] == 'kf') {
+            $fdtokf = json_decode($redis->get("fdtokf"), true);
+            $kftokh = json_decode($redis->get("kftokh"), true);
+            $khid   = json_decode($redis->get("khid"), true);
+            echo $fdtokf[$frame->fd] . " to " . $kftokh[$fdtokf[$frame->fd]] . " " . $msg . PHP_EOL;
+            $pushMsg = json_encode([
+                'me'   => 1,
+                'msg'  => $msg,
+                'time' => date("Y-m-d H:i:s"),
+            ]);
+            $server->push($frame->fd, $pushMsg); //发给客服端信息
+            echo $khid[$kftokh[$fdtokf[$frame->fd]]] . PHP_EOL;
+            $pushMsg = json_encode([
+                'me'   => 0,
+                'msg'  => $msg,
+                'time' => date("Y-m-d H:i:s"),
+            ]);
+            $server->push($khid[$kftokh[$fdtokf[$frame->fd]]], $pushMsg); //发客户服端消息
         }
     }
 });

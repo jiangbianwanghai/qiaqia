@@ -58,14 +58,12 @@ setTimeout(function(){
 
         //接收到服务器数据时触发
         socket.onmessage = function (event) {
-            //document.getElementById("push_content").innerHTML = event.data;
-            var Cts = event.data;
-            if(Cts.indexOf("客户") >= 0 ) {
-                $("#push_content").append("<div style='text-align:left'>"+event.data+"<br /><br /></div>");
+            Eventjson = JSON.parse(event.data);
+            if (Eventjson.me) {
+                $("#push_content").append("<div style='text-align:right'>我:"+Eventjson.msg+"<br />"+Eventjson.time+"<br /></div>");
             } else {
-                $("#push_content").append("<div style='text-align:right'>我:"+event.data+"<br /><br /></div>");
+                $("#push_content").append("<div style='text-align:left'>"+Eventjson.msg+"<br />"+Eventjson.time+"<br /></div>");
             }
-
             $('#push_content').scrollTop( $('#push_content')[0].scrollHeight );
         };
 
