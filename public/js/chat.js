@@ -5,7 +5,7 @@ printservice.type="text/javascript";
 printservice.src ="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js";
 head.insertBefore( printservice,head.firstChild );
 //输出浮动弹窗
-document.write('<div id="fudong" style="background: #f8f8f8;width:300px; height:450px; z-index: 9999; position: fixed ! important; right: 20px; bottom: 20px;box-shadow:0 0 40px 1px #c9cccd;"><div><div id="push_content" style="color:gray; font-size:12px; background: #fff;border: #ccc solid 1px; padding: 10px;margin-bottom: 10px; height: 360px; overflow-y: scroll;"></div><div><div style="padding-left:10px;"><textarea rows="10" style="width:70%;resize:none;border-style:none;border-color:Transparent;overflow:auto;font-size:12px;padding:10px;font-style:normal;height:25px" id="text" placeholder="请输入与客服沟通的内容"></textarea><button id="push_button" style="float:right;border:0;height:45px;width:65px;font-size:16px;background:#f8f8f8;color:#999">发送</button></div></div></div></div>');
+document.write('<div id="fudong" style="background: #f8f8f8;width:300px; height:450px; z-index: 9999; position: fixed ! important; right: 20px; bottom: 20px;box-shadow:0 0 40px 1px #c9cccd;"><div><div id="push_content" style="color:gray; font-size:12px; background: #fff;border: #ccc solid 1px; padding: 10px;margin-bottom: 10px; height: 360px; overflow-y: scroll;"></div><div><div style="padding-left:10px;"><textarea rows="10" style="width:70%;resize:none;border-style:none;border-color:Transparent;overflow:auto;font-size:12px;padding:10px;font-style:normal;height:25px" id="text" placeholder="请输入内容(ctrl+回车即可发送)"></textarea><button id="push_button" style="float:right;border:0;height:45px;width:65px;font-size:16px;background:#f8f8f8;color:#999">发送</button></div></div></div></div>');
 
 //延迟加载js
 setTimeout(function(){
@@ -35,7 +35,7 @@ setTimeout(function(){
 
         //监听键盘回车键
         $("body").keydown(function(event) {
-             if (event.keyCode == "13") {
+             if (event.ctrlKey && event.keyCode == 13) {
                  $('#push_button').click();
              }
          });
@@ -48,6 +48,7 @@ setTimeout(function(){
                 var messageJson = JSON.stringify(messageObj);
                 socket.send(messageJson);
                 $("#text").val("");
+                console.log($("#text").val().indexOf("\n"));
                 $('#text').css("background-color","white");
             } else {
                 $('#text').focus();
