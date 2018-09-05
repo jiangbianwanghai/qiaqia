@@ -45,7 +45,9 @@ setTimeout(function(){
         $("#push_button").click(function(){
             var text = $("#text").val();
             if (text) {
-                socket.send(text);
+                var messageObj = {post:1,role:'kh',msg:text};
+                var messageJson = JSON.stringify(messageObj);
+                socket.send(messageJson);
                 $("#text").val("");
                 $('#text').css("background-color","white");
             } else {

@@ -5,6 +5,9 @@ $redis->connect('127.0.0.1', 6379);
 $redis->set("fd", "[]"); //存客户端
 $redis->set("kfid", "[]"); //存客服端标识
 $redis->set("khid", "[]"); //存客户端标识
+$redis->set("fdtokf", "[]"); //fd到客服标识映射
+$redis->set("fdtokh", "[]"); //fd到客户端标识映射
+$redis->set("khtokf", "[]"); //客户端到客服端的映射
 
 /**
  * swoole从1.7.9开始增加了对WebSocket的支持
@@ -52,35 +55,51 @@ $server->on('message', function ($server, $frame) use ($redis) {
      * 将客服的帐号与fd对应起来
      */
     if (!empty($data['kf'])) {
+        //帐号 -> fd
         $kfid[$data['uid']] = $frame->fd;
         $kfid               = json_encode($kfid);
         $redis->set("kfid", $kfid);
+        //fd -> 帐号
+        $fdtokf[$frame->fd] = $data['uid'];
+        $fdtokf             = json_encode($fdtokf);
+        $redis->set("fdtokf", $fdtokf);
     }
+
     /**
      * 将客户端的标识与fd对应起来
      */
     if (!empty($data['kh'])) {
+        //帐号 -> fd
         $khid[$data['uid']] = $frame->fd;
         $khid               = json_encode($khid);
         $redis->set("khid", $khid);
+        //fd -> 帐号
+        $fdtokh[$frame->fd] = $data['uid'];
+        $fdtokh             = json_encode($fdtokh);
+        $redis->set("fdtokh", $fdtokh);
+        //查询客户端是否映射到了客服
+        $khtokf = json_decode($redis->get("khtokf"), true);
+        $kfid   = json_decode($redis->get("kfid"), true);
+        if (empty($khtokf[$data['uid']])) {
+            $khtokf[$data['uid']] = '1101';
+            $khtokf               = json_encode($khtokf);
+            $redis->set("khtokf", $khtokf);
+        }
     }
 
     /**
-     * 向websocket客户端连接推送数据，长度最大不得超过2M。
-     * $fd 客户端连接的ID，如果指定的$fd对应的TCP连接并非websocket客户端，将会发送失败
-     * $data 要发送的数据内容
-     * $opcode，指定发送数据内容的格式，默认为文本。发送二进制内容$opcode参数需要设置为WEBSOCKET_OPCODE_BINARY_FRAME
+     * 获取消息
      */
-    $content = strip_tags($frame->data);
-    echo "received message: {$frame->data}\n";
-    if (!empty($content)) {
-        $server->push($frame->fd, $content);
-        $str = json_decode($redis->get("fd"), true);
-        foreach ($str as $key => $value) {
-            if ($frame->fd != $value) {
-                echo "客户{$value}:" . $content . "\n";
-                $server->push($value, "客户{$frame->fd}:" . $content);
-            }
+    if (!empty($data['post'])) {
+        $msg = strip_tags($data['msg']);
+        if ($data['role'] == 'kh') {
+            $arr    = json_decode($redis->get("fdtokh"), true);
+            $khtokf = json_decode($redis->get("khtokf"), true);
+            $kfid   = json_decode($redis->get("kfid"), true);
+            echo $arr[$frame->fd] . " to " . $khtokf[$arr[$frame->fd]] . " " . $msg . PHP_EOL;
+            $server->push($frame->fd, $msg); //发给客户端信息
+            echo $kfid[$khtokf[$arr[$frame->fd]]] . PHP_EOL;
+            $server->push($kfid[$khtokf[$arr[$frame->fd]]], $msg); //发给客服端消息
         }
     }
 });

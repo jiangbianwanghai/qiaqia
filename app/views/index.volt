@@ -30,6 +30,7 @@
       </style>
     </head>
     <body>
+    <section>
       <div class="container-fluid">
         <div class="container ng-scope">
           <div class="block-header">
@@ -136,7 +137,7 @@
                     </li>
                   </ul>
                 </div>
-                <div class="lv-body" id="ms-scrollbar" style="overflow:scroll; overflow-x: hidden; height:520px;">
+                <div class="lv-body" id="ms-scrollbar-right" style="overflow:scroll; overflow-x: hidden; height:520px;">
                   <div class="lv-item media">
                     <div class="lv-avatar pull-left"> <img src="./images/bhai.jpg" alt=""> </div>
                     <div class="media-body">
@@ -181,8 +182,6 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
     </section>
     <script type="text/javascript" src="./css/jquery.js"></script>
     <script src="./css/bootstrap.min.js"></script>
