@@ -12,15 +12,15 @@ class IndexController extends ControllerBase
     public function loginAction()
     {
         $this->view->setRenderLevel(View::LEVEL_NO_RENDER);
-        $accountArr = [
+        $db_account_table = [
             '1101' => '123456',
             '1102' => '123456',
             '1103' => '123456',
         ];
         $account  = $this->request->getPost('account', ['trim', 'int']);
         $password = $this->request->getPost('password', ['trim', 'alphanum']);
-        if (isset($accountArr[$account])) {
-            if ($accountArr[$account] == $password) {
+        if (isset($db_account_table[$account])) {
+            if ($db_account_table[$account] == $password) {
                 $json = ['code' => 0, 'msg' => null];
                 $auth = serialize(['account' => $account]);
                 $this->cookies->set('auth', $auth, time() + 15 * 86400);

@@ -1,7 +1,10 @@
 <?php
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
-$redis->set("fd", "[]");
+
+$redis->set("fd", "[]"); //存客户端
+$redis->set("kfid", "[]"); //存客服端标识
+$redis->set("khid", "[]"); //存客户端标识
 
 /**
  * swoole从1.7.9开始增加了对WebSocket的支持
@@ -42,6 +45,26 @@ $server->on('open', function ($server, $req) use ($redis) {
  * PS:$data 如果是文本类型，编码格式必然是UTF-8，这是WebSocket协议规定的
  */
 $server->on('message', function ($server, $frame) use ($redis) {
+    $json = $frame->data;
+    $data = json_decode($json, true);
+
+    /**
+     * 将客服的帐号与fd对应起来
+     */
+    if ($data['kf']) {
+        $kfid[$data['uid']] = $frame->fd;
+        $kfid               = json_encode($kfid);
+        $redis->set("kfid", $kfid);
+    }
+    /**
+     * 将客户端的标识与fd对应起来
+     */
+    if ($data['kh']) {
+        $khid[$data['uid']] = $frame->fd;
+        $khid               = json_encode($khid);
+        $redis->set("khid", $khid);
+    }
+
     /**
      * 向websocket客户端连接推送数据，长度最大不得超过2M。
      * $fd 客户端连接的ID，如果指定的$fd对应的TCP连接并非websocket客户端，将会发送失败

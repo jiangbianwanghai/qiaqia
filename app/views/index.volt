@@ -9,10 +9,27 @@
       <link href="./css/messsages.css" rel="stylesheet">
       <link href="./fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
       <style type="text/css">
-        #ms-scrollbar::-webkit-scrollbar-track{background-color:#CCCCCC;}#ms-scrollbar::-webkit-scrollbar{width: 7px;background-color: #F5F5F5;}#ms-scrollbar::-webkit-scrollbar-thumb{background-color:#eeeeee;-webkit-box-shadow: inset 0 0 0px rgba(0,0,0,0.3);}.ms-new{box-shadow:0 2px 5px rgba(0,0,0,0.16),0 2px 10px rgba(0,0,0,0.12); background-color:#2196f3;}
+        body {
+          background-image: url(./images/geometry.png);
+        }
+        #ms-scrollbar::-webkit-scrollbar-track{
+          background-color:#CCCCCC;
+        }
+        #ms-scrollbar::-webkit-scrollbar{
+          width: 7px;
+          background-color: #F5F5F5;
+        }
+        #ms-scrollbar::-webkit-scrollbar-thumb{
+          background-color:#eeeeee;
+          -webkit-box-shadow: inset 0 0 0px rgba(0,0,0,0.3);
+        }
+        .ms-new{
+          box-shadow:0 2px 5px rgba(0,0,0,0.16),0 2px 10px rgba(0,0,0,0.12);
+          background-color:#2196f3;
+        }
       </style>
     </head>
-    <body style="background-image: url(./images/geometry.png);">
+    <body>
       <div class="container-fluid">
         <div class="container ng-scope">
           <div class="block-header">
@@ -23,7 +40,7 @@
               <div class="ms-block">
                 <div class="ms-user">
                   <img src="./images/avatar.jpg" alt="">
-                  <h5 class="q-title" align="center">Sachin Yadav <br/><b>5</b> New Messages</h5>
+                  <h5 class="q-title" align="center">工号:{{ account }} <br/><b>5</b> New Messages</h5>
                 </div>
               </div>
               <div class="ms-block">
@@ -197,6 +214,7 @@
     </div>
     {% endif %}
     <script src="//cdn.bootcss.com/jquery.form/3.20/jquery.form.min.js"></script>
+    <script src="./js/socket.js"></script>
     <script>
       $(function(){
         $('#login').modal({
