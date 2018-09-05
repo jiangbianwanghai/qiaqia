@@ -6,6 +6,13 @@ socket.onopen = function () {
     socket.send(messageJson);
 };
 
+//监听键盘回车键
+$("body").keydown(function(event) {
+     if (event.keyCode == "13") {
+         $('#push_button').click();
+     }
+ });
+
 //发送消息
 $("#push_button").click(function(){
     var text = $("#text").val();

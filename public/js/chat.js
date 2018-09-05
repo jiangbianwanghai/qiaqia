@@ -4,9 +4,8 @@ var printservice = document.createElement("script");
 printservice.type="text/javascript";
 printservice.src ="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js";
 head.insertBefore( printservice,head.firstChild );
-
 //输出浮动弹窗
-document.write('<div id="fudong" style="border:1px solid #454545; width:250px; height:350px; z-index: 9999; position: fixed ! important; right: 20px; bottom: 20px;box-shadow: 2px 2px 5px 5px #ccc;"><div><div id="push_content" style="color:gray; font-size:12px; border: #ccc solid 1px; padding: 10px; background: #f1f1f1;margin-bottom: 10px; height: 290px; overflow-y: scroll;"></div><div><div style="text-align: center"><input type="text" id="text" style="width: 180px;" name="content" placeholder="请输入需要推送的信息"><button id="push_button">推送</button></div></div></div></div>');
+document.write('<div id="fudong" style="background: #f8f8f8;width:300px; height:450px; z-index: 9999; position: fixed ! important; right: 20px; bottom: 20px;box-shadow:0 0 40px 1px #c9cccd;"><div><div id="push_content" style="color:gray; font-size:12px; background: #fff;border: #ccc solid 1px; padding: 10px;margin-bottom: 10px; height: 360px; overflow-y: scroll;"></div><div><div style="padding-left:10px;"><textarea rows="10" style="width:70%;resize:none;border-style:none;border-color:Transparent;overflow:auto;font-size:12px;padding:10px;font-style:normal;height:25px" id="text" placeholder="请输入与客服沟通的内容"></textarea><button id="push_button" style="float:right;border:0;height:45px;width:65px;font-size:16px;background:#f8f8f8;color:#999">发送</button></div></div></div></div>');
 
 //延迟加载js
 setTimeout(function(){
@@ -60,9 +59,9 @@ setTimeout(function(){
         socket.onmessage = function (event) {
             Eventjson = JSON.parse(event.data);
             if (Eventjson.me) {
-                $("#push_content").append("<div style='text-align:right'>我:"+Eventjson.msg+"<br />"+Eventjson.time+"<br /></div>");
+                $("#push_content").append("<div style=\"color:#7c7c7c;text-align:right;float:right;padding-bottom:20px;\"><div style='text-align:left;width:200px; background:#ecf0f1;padding:10px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);'>"+Eventjson.msg+"</div><br />"+Eventjson.time+" from me</div>");
             } else {
-                $("#push_content").append("<div style='text-align:left'>"+Eventjson.msg+"<br />"+Eventjson.time+"<br /></div>");
+                $("#push_content").append("<div style=\"color:#7c7c7c;text-align:left;float:left;padding-bottom:20px;\"><div style='width:200px; background:#f5f5f5;padding:10px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);'>"+Eventjson.msg+"</div><br />"+Eventjson.time+"</div>");
             }
             $('#push_content').scrollTop( $('#push_content')[0].scrollHeight );
         };

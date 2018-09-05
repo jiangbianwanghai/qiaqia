@@ -138,45 +138,10 @@
                   </ul>
                 </div>
                 <div class="lv-body" id="ms-scrollbar-right" style="overflow:scroll; overflow-x: hidden; height:520px;">
-                  <div class="lv-item media">
-                    <div class="lv-avatar pull-left"> <img src="./images/bhai.jpg" alt=""> </div>
-                    <div class="media-body">
-                      <div class="ms-item"> <span class="glyphicon glyphicon-triangle-left" style="color:#000000;"></span> We have an aim to educate and provide you the power to make website anything. Anytime. We don't teach, we educate.We provide Tutorials for many Programming languages on our website. </div>
-                      <small class="ms-date"><span class="glyphicon glyphicon-time"></span>&nbsp; 05/10/2015 at 09:00</small> </div>
-                    </div>
-                    <div class="lv-item media right">
-                      <div class="lv-avatar pull-right"> <img src="./images/avatar.jpg" alt=""> </div>
-                      <div class="media-body">
-                        <div class="ms-item"> We started this site with clear mission that we want to deliver complete details knowledge of Programming to our audience. We are sharing this knowledge in all areas that you can see in our site. </div>
-                        <small class="ms-date"><span class="glyphicon glyphicon-time"></span>&nbsp; 05/10/2015 at 09:30</small> </div>
-                      </div>
-                      <div class="lv-item media">
-                        <div class="lv-avatar pull-left"> <img src="./images/bhai.jpg" alt=""> </div>
-                        <div class="media-body">
-                          <div class="ms-item"> It's gives the power to synthesis anything anywhere you want to. Its the ultimate tool to solve any problem. And we help you excel in that by working with you. </div>
-                          <small class="ms-date"><span class="glyphicon glyphicon-time"></span>&nbsp; 20/02/2015 at 09:33</small>
-                        </div>
-                      </div>
-                      <div class="lv-item media right">
-                        <div class="lv-avatar pull-right"> <img src="./images/avatar.jpg" alt=""> </div>
-                        <div class="media-body">
-                          <div class="ms-item"> The basic essence of life is to learn, explore and synthesis. We provide you with the tools to make your dreams come true.Our website is totally for free and available 24/7 and does not consume your data packs and works like a charm on the supersonic lovely internet.
-                          </div>
-                          <small class="ms-date"><span class="glyphicon glyphicon-time"></span>&nbsp; 05/10/2015 at 10:10</small>
-                        </div>
-                      </div>
-                      <div class="lv-item media">
-                        <div class="lv-avatar pull-left"> <img src="./images/bhai.jpg" alt=""> </div>
-                        <div class="media-body">
-                          <div class="ms-item"> Acadnote a world class website is processing surveys for every student who wants to do something new and different in the field of academics. so it is a right place for every student to share their opinions about their present academics so this website can provide every single student requirements and it is possible for us to do if every student explains about their academics requirements. Last but not the least tell the needs and collect your study materials which we will provide to you.
-                          </div>
-                          <small class="ms-date"><span class="glyphicon glyphicon-time"></span>&nbsp; 05/10/2015 at 10:24</small>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="lv-footer ms-reply"> <textarea rows="10" id="text" placeholder="Write messages..."></textarea> <button id="push_button" class=""><span class="glyphicon glyphicon-send"></span></button>
-                    </div>
+                  <!-- 聊天面板 -->
+                </div>
+                <div class="clearfix"></div>
+                <div class="lv-footer ms-reply"> <textarea rows="10" id="text" placeholder="Write messages..."></textarea> <button id="push_button" class=""><span class="glyphicon glyphicon-send"></span></button></div>
                   </div>
                 </div>
               </div>
