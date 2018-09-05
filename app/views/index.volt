@@ -138,7 +138,29 @@
                   </ul>
                 </div>
                 <div class="lv-body" id="ms-scrollbar-right" style="overflow:scroll; overflow-x: hidden; height:520px;">
-                  <!-- 聊天面板 -->
+                  {% if history is not empty %}
+                    {% for item in history %}
+                      {% if item['me'] %}
+                      <div class="lv-item media right">
+                        <div class="lv-avatar pull-right"> <img src="./images/avatar.jpg" alt=""> </div>
+                        <div class="media-body">
+                            <div class="ms-item">{{ item['msg'] }}</div>
+                            <small class="ms-date"><span class="glyphicon glyphicon-time"></span>&nbsp; {{ item['time'] }}</small>
+                        </div>
+                      </div>
+                      {% else %}
+                      <div class="lv-item media">
+                        <div class="lv-avatar pull-left"> <img src="./images/bhai.jpg" alt=""> </div>
+                        <div class="media-body">
+                            <div class="ms-item">{{ item['msg'] }}</div>
+                            <small class="ms-date"><span class="glyphicon glyphicon-time"></span>&nbsp; {{ item['time'] }}</small>
+                        </div>
+                      </div>
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+                  <hr />
+                  <div style="text-align: center; font-size: 10px; margin-bottom: 250px; color: #0000cd">以上是聊天记录</div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="lv-footer ms-reply"> <textarea rows="10" id="text" placeholder="Write messages..."></textarea> <button id="push_button" class=""><span class="glyphicon glyphicon-send"></span></button></div>

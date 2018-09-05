@@ -108,6 +108,8 @@ $server->on('message', function ($server, $frame) use ($redis) {
                 'msg'  => $msg,
                 'time' => date("Y-m-d H:i:s"),
             ]);
+            $key1 = $arr[$frame->fd] . ':' . $khtokf[$arr[$frame->fd]];
+            $redis->lPush($key1, $pushMsg);
             $server->push($frame->fd, $pushMsg); //发给客户端信息
             echo $kfid[$khtokf[$arr[$frame->fd]]] . PHP_EOL;
             $pushMsg = json_encode([
@@ -115,6 +117,8 @@ $server->on('message', function ($server, $frame) use ($redis) {
                 'msg'  => $msg,
                 'time' => date("Y-m-d H:i:s"),
             ]);
+            $key2 = $khtokf[$arr[$frame->fd]] . ':' . $arr[$frame->fd];
+            $redis->lPush($key2, $pushMsg);
             $server->push($kfid[$khtokf[$arr[$frame->fd]]], $pushMsg); //发给客服端消息
         }
         if ($data['role'] == 'kf') {
@@ -127,6 +131,8 @@ $server->on('message', function ($server, $frame) use ($redis) {
                 'msg'  => $msg,
                 'time' => date("Y-m-d H:i:s"),
             ]);
+            $key1 = $fdtokf[$frame->fd] . ':' . $kftokh[$fdtokf[$frame->fd]];
+            $redis->lPush($key1, $pushMsg);
             $server->push($frame->fd, $pushMsg); //发给客服端信息
             echo $khid[$kftokh[$fdtokf[$frame->fd]]] . PHP_EOL;
             $pushMsg = json_encode([
@@ -134,6 +140,8 @@ $server->on('message', function ($server, $frame) use ($redis) {
                 'msg'  => $msg,
                 'time' => date("Y-m-d H:i:s"),
             ]);
+            $key2 = $kftokh[$fdtokf[$frame->fd]] . ':' . $fdtokf[$frame->fd];
+            $redis->lPush($key2, $pushMsg);
             $server->push($khid[$kftokh[$fdtokf[$frame->fd]]], $pushMsg); //发客户服端消息
         }
     }

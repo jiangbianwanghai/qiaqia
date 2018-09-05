@@ -21,4 +21,8 @@ return new \Phalcon\Config(array(
         'cacheDir'       => APP_PATH . '/app/cache/',
         'baseUri'        => '/qiaqia/',
     ),
+    'redis'       => array(
+        'host' => '127.0.0.1',
+        'port' => '6379',
+    ),
 ));

@@ -103,3 +103,9 @@ $di->set('crypt', function () {
     $crypt->setKey('#1dj8$=dp?.ak//j');
     return $crypt;
 });
+
+$di->setShared('redis', function () use ($config) {
+    $redis = new Redis();
+    $redis->connect($config->redis->host, $config->redis->port);
+    return $redis;
+});

@@ -6,7 +6,18 @@ class IndexController extends ControllerBase
 
     public function indexAction()
     {
-
+        $this->view->history = '';
+        $history             = [];
+        $key                 = '1101:uid_1536279503856';
+        for ($i = -1; $i >= -10; $i--) {
+            $item = json_decode($this->redis->lGet($key, $i), true);
+            if ($item) {
+                $history[] = $item;
+            } else {
+                break;
+            }
+        }
+        $this->view->history = $history;
     }
 
     public function loginAction()

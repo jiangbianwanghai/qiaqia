@@ -1,3 +1,5 @@
+$('#ms-scrollbar-right').scrollTop( $('#ms-scrollbar-right')[0].scrollHeight );
+
 var socket = new WebSocket('ws://192.168.1.110:9502');
 socket.onopen = function () {
     console.log('Connected!');
