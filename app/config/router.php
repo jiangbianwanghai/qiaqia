@@ -9,5 +9,12 @@ $router->add(
         'action'     => 'login',
     ]
 );
+$router->add(
+    '/chatlog/{id:[\w]+}',
+    [
+        'controller' => 'index',
+        'action'     => 'chatlog',
+    ]
+);
 
 $router->handle();

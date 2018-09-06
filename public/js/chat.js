@@ -27,10 +27,32 @@ setTimeout(function(){
 
         //监听是否连接服务器成功触发
         socket.onopen = function () {
+            $("#push_content").append("<div style=\"width:260px;padding-bottom:40px; height:30px;text-align:center; float:left;\">-—— 连接服务器成功 ——-</div>");
             console.log('Connected!');
             var messageObj = {kh:1,uid:username};
             var messageJson = JSON.stringify(messageObj);
             socket.send(messageJson);
+
+            //读取聊天日志
+            $.ajax({
+              type: "GET",
+              dataType:'jsonp',
+              url: "http://qiaqia.im/chatlog/"+username,
+              success : function(data) {
+                if (data.code == 200) {
+                    for(var p in data.data){
+                      if (data.data[p].me) {
+                        $("#push_content").append("<div style=\"color:#7c7c7c;text-align:right;float:right;padding-bottom:20px;\"><div style='text-align:left;width:200px; background:#ecf0f1;padding:10px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);'>"+data.data[p].msg+"</div><br />"+data.data[p].time+" from me</div>");
+                      } else {
+                        $("#push_content").append("<div style=\"color:#7c7c7c;text-align:left;float:left;padding-bottom:20px;\"><div style='width:200px; background:#f5f5f5;padding:10px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);'>"+data.data[p].msg+"</div><br />"+data.data[p].time+"</div>");
+                      }
+                    }
+                    $("#push_content").append("<div style=\"width:260px;padding-bottom:40px; height:30px;text-align:center; float:left;\">以上是之前的聊天记录<hr style=\"height:1px;border:none;border-top:1px solid #eee;\" /></div>");
+                    $('#push_content').scrollTop( $('#push_content')[0].scrollHeight );
+                }
+              }
+            })
+
         };
 
         //监听键盘回车键
@@ -69,6 +91,7 @@ setTimeout(function(){
 
         //与服务器连接断开触发
         socket.onclose = function () {
+            $("#push_content").append("<div style=\"width:260px;padding-bottom:40px; height:30px;text-align:center; float:left;\">-—— 与服务器连接断开 ——-</div>");
             console.log('Lost connection!');
         };
 

@@ -160,10 +160,10 @@
                     {% endfor %}
                   {% endif %}
                   <hr />
-                  <div style="text-align: center; font-size: 10px; margin-bottom: 250px; color: #0000cd">以上是聊天记录</div>
+                  <div style="text-align: center; font-size: 10px; margin-bottom: 150px; color: #0000cd">以上是之前的聊天记录</div>
                 </div>
                 <div class="clearfix"></div>
-                <div class="lv-footer ms-reply"> <textarea rows="10" id="text" placeholder="Write messages..."></textarea> <button id="push_button" class=""><span class="glyphicon glyphicon-send"></span></button></div>
+                <div class="lv-footer ms-reply"> <textarea rows="10" id="text" placeholder="请输入内容，支出换行(ctrl+回车即可发送)"></textarea> <button id="push_button" class=""><span class="glyphicon glyphicon-send"></span></button></div>
                   </div>
                 </div>
               </div>

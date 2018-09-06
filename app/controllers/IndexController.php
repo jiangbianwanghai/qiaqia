@@ -9,13 +9,16 @@ class IndexController extends ControllerBase
         $this->view->history = '';
         $history             = [];
         $key                 = '1101:uid_1536279503856';
-        for ($i = -1; $i >= -10; $i--) {
+        for ($i = 0; $i < 10; $i++) {
             $item = json_decode($this->redis->lGet($key, $i), true);
             if ($item) {
                 $history[] = $item;
             } else {
                 break;
             }
+        }
+        if ($history) {
+            $history = array_reverse($history);
         }
         $this->view->history = $history;
     }
@@ -43,6 +46,29 @@ class IndexController extends ControllerBase
         }
         $this->response->setJsonContent($json);
         return $this->response;
+    }
+
+    public function chatlogAction($id)
+    {
+        header('Content-Type:application/json; charset=utf-8');
+        $this->view->setRenderLevel(View::LEVEL_NO_RENDER);
+        $log['code'] = 200;
+        $log['data'] = null;
+        $key         = $id . ":1101";
+        for ($i = 0; $i <= 10; $i++) {
+            $item = json_decode($this->redis->lGet($key, $i), true);
+            if ($item) {
+                $log['data'][] = $item;
+            } else {
+                break;
+            }
+        }
+        if ($log['data']) {
+            $log['data'] = array_reverse($log['data']);
+        }
+        $callback = $_GET['callback'];
+        echo $callback . '(' . json_encode($log) . ')';
+        exit;
     }
 
 }

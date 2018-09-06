@@ -2,6 +2,7 @@ $('#ms-scrollbar-right').scrollTop( $('#ms-scrollbar-right')[0].scrollHeight );
 
 var socket = new WebSocket('ws://192.168.1.110:9502');
 socket.onopen = function () {
+    $("#ms-scrollbar-right").append("<div style=\"text-align: center; font-size: 10px; margin-bottom: 150px; color: #ccc\">-—— 连接服务器成功 ——-</div>");
     console.log('Connected!');
     var messageObj = {kf:1,uid:"1101"};
     var messageJson = JSON.stringify(messageObj);
@@ -42,6 +43,7 @@ socket.onmessage = function (event) {
 
 //与服务器连接断开触发
 socket.onclose = function () {
+    $("#ms-scrollbar-right").append("<div style=\"text-align: center; font-size: 10px; margin-bottom: 150px; color: #ccc\">-—— 与服务器连接断开 ——-</div>");
     console.log('Lost connection!');
 };
 
