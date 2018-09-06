@@ -29,7 +29,8 @@ setTimeout(function(){
         socket.onopen = function () {
             $("#push_content").append("<div style=\"width:260px;padding-bottom:40px; height:30px;text-align:center; float:left;\">-—— 连接服务器成功 ——-</div>");
             console.log('Connected!');
-            var messageObj = {kh:1,uid:username};
+            var ua = navigator.userAgent.toLowerCase();
+            var messageObj = {kh:1,uid:username,ua:ua};
             var messageJson = JSON.stringify(messageObj);
             socket.send(messageJson);
 

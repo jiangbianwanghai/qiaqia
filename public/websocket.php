@@ -72,8 +72,11 @@ $server->on('message', function ($server, $frame) use ($redis) {
      */
     if (!empty($data['kh'])) {
         //帐号 -> fd
-        $khid[$data['uid']] = $frame->fd;
-        $khid               = json_encode($khid);
+        $khid[$data['uid']] = [
+            'fd' => $frame->fd,
+            'ua' => $data['ua'],
+        ];
+        $khid = json_encode($khid);
         $redis->set("khid", $khid);
         //fd -> 帐号
         $fdtokh[$frame->fd] = $data['uid'];
@@ -134,7 +137,7 @@ $server->on('message', function ($server, $frame) use ($redis) {
             $key1 = $fdtokf[$frame->fd] . ':' . $kftokh[$fdtokf[$frame->fd]];
             $redis->lPush($key1, $pushMsg);
             $server->push($frame->fd, $pushMsg); //发给客服端信息
-            echo $khid[$kftokh[$fdtokf[$frame->fd]]] . PHP_EOL;
+            echo $khid[$kftokh[$fdtokf[$frame->fd]]]['fd'] . PHP_EOL;
             $pushMsg = json_encode([
                 'me'   => 0,
                 'msg'  => $msg,
@@ -142,7 +145,7 @@ $server->on('message', function ($server, $frame) use ($redis) {
             ]);
             $key2 = $kftokh[$fdtokf[$frame->fd]] . ':' . $fdtokf[$frame->fd];
             $redis->lPush($key2, $pushMsg);
-            $server->push($khid[$kftokh[$fdtokf[$frame->fd]]], $pushMsg); //发客户服端消息
+            $server->push($khid[$kftokh[$fdtokf[$frame->fd]]]['fd'], $pushMsg); //发客户服端消息
         }
     }
 });

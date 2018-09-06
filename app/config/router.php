@@ -16,5 +16,12 @@ $router->add(
         'action'     => 'chatlog',
     ]
 );
+$router->add(
+    '/chat/{uid:[\w]+}',
+    [
+        'controller' => 'index',
+        'action'     => 'index',
+    ]
+);
 
 $router->handle();

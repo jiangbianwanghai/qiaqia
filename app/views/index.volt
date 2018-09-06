@@ -5,12 +5,12 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>客服面板 - QiaQia WebIM</title>
-      <link href="./css/bootstrap.min.css" rel="stylesheet">
-      <link href="./css/messsages.css" rel="stylesheet">
-      <link href="./fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+      <link href="/css/bootstrap.min.css" rel="stylesheet">
+      <link href="/css/messsages.css" rel="stylesheet">
+      <link href="/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
       <style type="text/css">
         body {
-          background-image: url(./images/geometry.png);
+          background-image: url(/images/geometry.png);
         }
         #ms-scrollbar::-webkit-scrollbar-track{
           background-color:#CCCCCC;
@@ -40,7 +40,7 @@
             <div class="ms-menu" style="overflow:scroll; overflow-x: hidden;" id="ms-scrollbar">
               <div class="ms-block">
                 <div class="ms-user">
-                  <img src="./images/avatar.jpg" alt="">
+                  <img src="/images/avatar.jpg" alt="">
                   <h5 class="q-title" align="center">工号:{{ account }} <br/><b>5</b> New Messages</h5>
                 </div>
               </div>
@@ -50,56 +50,56 @@
               <hr/>
               <div class="listview lv-user m-t-20">
                 <div class="lv-item media active">
-                  <div class="lv-avatar pull-left"> <img src="./images/bhai.jpg" alt=""> </div>
+                  <div class="lv-avatar pull-left"> <img src="/images/bhai.jpg" alt=""> </div>
                   <div class="media-body">
                     <div class="lv-title">Ashwani Singh Yadav</div>
                     <div class="lv-small"> Acadnote a world class website is processing surveys for </div>
                   </div>
                 </div>
                 <div class="lv-item media">
-                  <div class="lv-avatar pull-left"> <img src="./images/ajit.jpg" alt=""> </div>
+                  <div class="lv-avatar pull-left"> <img src="/images/ajit.jpg" alt=""> </div>
                   <div class="media-body">
                     <div class="lv-title"><b>Ajit Gupta</b><span class="pull-right">10 new</div>
                     <div class="lv-small"><b>Hello bro whatsup , how are you</b></div>
                   </div>
                 </div>
                 <div class="lv-item media">
-                  <div class="lv-avatar pull-left"> <img src="./images/chota.jpg" alt=""> </div>
+                  <div class="lv-avatar pull-left"> <img src="/images/chota.jpg" alt=""> </div>
                   <div class="media-body">
                     <div class="lv-title"><b>Deepak Yadav</b><span class="pull-right">2 new</span></div>
                     <div class="lv-small"><b>aur bhai collage kse chale rhai hai </b></div>
                   </div>
                 </div>
                 <div class="lv-item media">
-                  <div class="lv-avatar pull-left"> <img src="./images/sumit.jpg" alt=""> </div>
+                  <div class="lv-avatar pull-left"> <img src="/images/sumit.jpg" alt=""> </div>
                   <div class="media-body">
                     <div class="lv-title">Sumit kumar</div>
                     <div class="lv-small">aur suna kya haal hai bhai, aur</div>
                   </div>
                 </div>
                 <div class="lv-item media">
-                  <div class="lv-avatar pull-left"> <img src="./images/sega.jpg" alt=""> </div>
+                  <div class="lv-avatar pull-left"> <img src="/images/sega.jpg" alt=""> </div>
                   <div class="media-body">
                     <div class="lv-title">Sage Kalia</div>
                     <div class="lv-small">abey kaha chala gya ?? mar gya kya ??</div>
                   </div>
                 </div>
                 <div class="lv-item media">
-                  <div class="lv-avatar pull-left"> <img src="./images/gan.jpg" alt=""> </div>
+                  <div class="lv-avatar pull-left"> <img src="/images/gan.jpg" alt=""> </div>
                   <div class="media-body">
                     <div class="lv-title">Gagandeep Singh</div>
                     <div class="lv-small">yeh ley eamil address sachin.yadav1212@gmail.com</div>
                   </div>
                 </div>
                 <div class="lv-item media">
-                  <div class="lv-avatar pull-left"><img src="./images/vasu.jpg" alt=""> </div>
+                  <div class="lv-avatar pull-left"><img src="/images/vasu.jpg" alt=""> </div>
                   <div class="media-body">
                     <div class="lv-title">Vasu</div>
                     <div class="lv-small">kal se classess start hai koi holiday nahi hai </div>
                   </div>
                 </div>
                 <div class="lv-item media">
-                  <div class="lv-avatar pull-left"> <img src="./images/abc.jpg" alt=""> </div>
+                  <div class="lv-avatar pull-left"> <img src="/images/abc.jpg" alt=""> </div>
                   <div class="media-body">
                     <div class="lv-title">Deepu Singh</div>
                     <div class="lv-small">okk byee gud night dude kal baaat karte hai </div>
@@ -118,8 +118,8 @@
                     </div>
                   </div>
                   <div class="lvh-label hidden-xs">
-                    <div class="lv-avatar pull-left"> <img src="./images/bhai.jpg" alt=""> </div>
-                    <span class="c-black">Ashwani Singh Yadav<span style=" margin-left:8px; position:absolute; margin-top:12px;width: 8px;height: 8px;line-height: 8px; border-radius: 50%; background-color:#80d3ab;"></span></span>
+                    <div class="lv-avatar pull-left"> <img src="/images/bhai.jpg" alt=""> </div>
+                    <span class="c-black">{{ kh['uid'] }}<span style=" margin-left:8px; position:absolute; margin-top:12px;width: 8px;height: 8px;line-height: 8px; border-radius: 50%; background-color:#80d3ab;"></span></span>
                   </div>
                   <ul class="lv-actions actions list-unstyled list-inline">
                     <li> <a href="#" > <i class="fa fa-check"></i> </a> </li>
@@ -136,13 +136,14 @@
                       </ul>
                     </li>
                   </ul>
+                  <div style="font-size:12px; color:#ccc; text-align: center">TA的浏览器信息:{{ kh['ua'] }}</div>
                 </div>
                 <div class="lv-body" id="ms-scrollbar-right" style="overflow:scroll; overflow-x: hidden; height:520px;">
                   {% if history is not empty %}
                     {% for item in history %}
                       {% if item['me'] %}
                       <div class="lv-item media right">
-                        <div class="lv-avatar pull-right"> <img src="./images/avatar.jpg" alt=""> </div>
+                        <div class="lv-avatar pull-right"> <img src="/images/avatar.jpg" alt=""> </div>
                         <div class="media-body">
                             <div class="ms-item">{{ item['msg'] }}</div>
                             <small class="ms-date"><span class="glyphicon glyphicon-time"></span>&nbsp; {{ item['time'] }}</small>
@@ -150,7 +151,7 @@
                       </div>
                       {% else %}
                       <div class="lv-item media">
-                        <div class="lv-avatar pull-left"> <img src="./images/bhai.jpg" alt=""> </div>
+                        <div class="lv-avatar pull-left"> <img src="/images/bhai.jpg" alt=""> </div>
                         <div class="media-body">
                             <div class="ms-item">{{ item['msg'] }}</div>
                             <small class="ms-date"><span class="glyphicon glyphicon-time"></span>&nbsp; {{ item['time'] }}</small>
@@ -170,8 +171,8 @@
             </div>
           </div>
     </section>
-    <script type="text/javascript" src="./css/jquery.js"></script>
-    <script src="./css/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/css/jquery.js"></script>
+    <script src="/css/bootstrap.min.js"></script>
     {% if account is empty %}
     <!-- 登录面板 -->
     <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">

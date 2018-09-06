@@ -4,11 +4,12 @@ use Phalcon\Mvc\View;
 class IndexController extends ControllerBase
 {
 
-    public function indexAction()
+    public function indexAction($uid = '')
     {
+        $khid                = json_decode($this->redis->get("khid"), true);
         $this->view->history = '';
         $history             = [];
-        $key                 = '1101:uid_1536279503856';
+        $key                 = '1101:' . $uid;
         for ($i = 0; $i < 10; $i++) {
             $item = json_decode($this->redis->lGet($key, $i), true);
             if ($item) {
@@ -20,6 +21,11 @@ class IndexController extends ControllerBase
         if ($history) {
             $history = array_reverse($history);
         }
+        $kh = [
+            'uid' => $uid,
+            'ua'  => $khid[$uid]['ua'],
+        ];
+        $this->view->kh      = $kh;
         $this->view->history = $history;
     }
 
