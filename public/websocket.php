@@ -71,10 +71,12 @@ $server->on('message', function ($server, $frame) use ($redis) {
      * 将客户端的标识与fd对应起来
      */
     if (!empty($data['kh'])) {
+        $avatar = ['vasu.jpg', 'sumit.jpg', 'sega.jpg', 'gan.jpg', 'chota.jpg', 'bhai.jpg', 'ajit.jpg', 'abc.jpg'];
         //帐号 -> fd
         $khid[$data['uid']] = [
-            'fd' => $frame->fd,
-            'ua' => $data['ua'],
+            'fd'     => $frame->fd,
+            'ua'     => $data['ua'],
+            'avatar' => $avatar[mt_rand(1, 8)],
         ];
         $khid = json_encode($khid);
         $redis->set("khid", $khid);
@@ -102,27 +104,31 @@ $server->on('message', function ($server, $frame) use ($redis) {
         $msg = strip_tags($data['msg']);
         //客户端发送消息给客服
         if ($data['role'] == 'kh') {
-            $arr    = json_decode($redis->get("fdtokh"), true);
+            $fdtokh = json_decode($redis->get("fdtokh"), true);
             $khtokf = json_decode($redis->get("khtokf"), true);
             $kfid   = json_decode($redis->get("kfid"), true);
-            echo $arr[$frame->fd] . " to " . $khtokf[$arr[$frame->fd]] . " " . $msg . PHP_EOL;
+            $khid   = json_decode($redis->get("khid"), true);
+            echo $fdtokh[$frame->fd] . " to " . $khtokf[$fdtokh[$frame->fd]] . " " . $msg . PHP_EOL;
+
             $pushMsg = json_encode([
-                'me'   => 1,
-                'msg'  => $msg,
-                'time' => date("Y-m-d H:i:s"),
+                'avatar' => $khid[$fdtokh[$frame->fd]]['avatar'],
+                'me'     => 1,
+                'msg'    => $msg,
+                'time'   => date("Y-m-d H:i:s"),
             ]);
-            $key1 = $arr[$frame->fd] . ':' . $khtokf[$arr[$frame->fd]];
+            $key1 = $fdtokh[$frame->fd] . ':' . $khtokf[$fdtokh[$frame->fd]];
             $redis->lPush($key1, $pushMsg);
             $server->push($frame->fd, $pushMsg); //发给客户端信息
-            echo $kfid[$khtokf[$arr[$frame->fd]]] . PHP_EOL;
+            echo $kfid[$khtokf[$fdtokh[$frame->fd]]] . PHP_EOL;
             $pushMsg = json_encode([
-                'me'   => 0,
-                'msg'  => $msg,
-                'time' => date("Y-m-d H:i:s"),
+                'avatar' => $khid[$fdtokh[$frame->fd]]['avatar'],
+                'me'     => 0,
+                'msg'    => $msg,
+                'time'   => date("Y-m-d H:i:s"),
             ]);
-            $key2 = $khtokf[$arr[$frame->fd]] . ':' . $arr[$frame->fd];
+            $key2 = $khtokf[$fdtokh[$frame->fd]] . ':' . $fdtokh[$frame->fd];
             $redis->lPush($key2, $pushMsg);
-            $server->push($kfid[$khtokf[$arr[$frame->fd]]], $pushMsg); //发给客服端消息
+            $server->push($kfid[$khtokf[$fdtokh[$frame->fd]]], $pushMsg); //发给客服端消息
         }
         if ($data['role'] == 'kf') {
             $fdtokf = json_decode($redis->get("fdtokf"), true);
@@ -130,18 +136,20 @@ $server->on('message', function ($server, $frame) use ($redis) {
             $khid   = json_decode($redis->get("khid"), true);
             echo $fdtokf[$frame->fd] . " to " . $kftokh[$fdtokf[$frame->fd]] . " " . $msg . PHP_EOL;
             $pushMsg = json_encode([
-                'me'   => 1,
-                'msg'  => $msg,
-                'time' => date("Y-m-d H:i:s"),
+                'avatar' => 'avatar.jpg',
+                'me'     => 1,
+                'msg'    => $msg,
+                'time'   => date("Y-m-d H:i:s"),
             ]);
             $key1 = $fdtokf[$frame->fd] . ':' . $kftokh[$fdtokf[$frame->fd]];
             $redis->lPush($key1, $pushMsg);
             $server->push($frame->fd, $pushMsg); //发给客服端信息
             echo $khid[$kftokh[$fdtokf[$frame->fd]]]['fd'] . PHP_EOL;
             $pushMsg = json_encode([
-                'me'   => 0,
-                'msg'  => $msg,
-                'time' => date("Y-m-d H:i:s"),
+                'avatar' => 'avatar.jpg',
+                'me'     => 0,
+                'msg'    => $msg,
+                'time'   => date("Y-m-d H:i:s"),
             ]);
             $key2 = $kftokh[$fdtokf[$frame->fd]] . ':' . $fdtokf[$frame->fd];
             $redis->lPush($key2, $pushMsg);

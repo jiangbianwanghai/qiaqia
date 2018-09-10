@@ -17,6 +17,13 @@ $router->add(
     ]
 );
 $router->add(
+    '/chatlogkf/{id:[\w]+}',
+    [
+        'controller' => 'index',
+        'action'     => 'chatlogkf',
+    ]
+);
+$router->add(
     '/chat/{uid:[\w]+}',
     [
         'controller' => 'index',

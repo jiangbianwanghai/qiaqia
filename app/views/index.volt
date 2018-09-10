@@ -49,66 +49,22 @@
               </div>
               <hr/>
               <div class="listview lv-user m-t-20">
-                <div class="lv-item media active">
-                  <div class="lv-avatar pull-left"> <img src="/images/bhai.jpg" alt=""> </div>
+                {% if khid is not empty %}
+                {% for key,item in khid %}
+                <div class="lv-item media{{ uid == key ? ' active' : '' }}">
+                  <div class="lv-avatar pull-left"> <img src="/images/{{ item['avatar'] }}" alt="{{ uid }}"> </div>
                   <div class="media-body">
-                    <div class="lv-title">Ashwani Singh Yadav</div>
-                    <div class="lv-small"> Acadnote a world class website is processing surveys for </div>
+                    <div class="lv-title"><a href="/chat/{{ key }}">{{ key }}</a></div>
+                    <div class="lv-small">{{ item['ua'] }}</div>
                   </div>
                 </div>
-                <div class="lv-item media">
-                  <div class="lv-avatar pull-left"> <img src="/images/ajit.jpg" alt=""> </div>
-                  <div class="media-body">
-                    <div class="lv-title"><b>Ajit Gupta</b><span class="pull-right">10 new</div>
-                    <div class="lv-small"><b>Hello bro whatsup , how are you</b></div>
-                  </div>
-                </div>
-                <div class="lv-item media">
-                  <div class="lv-avatar pull-left"> <img src="/images/chota.jpg" alt=""> </div>
-                  <div class="media-body">
-                    <div class="lv-title"><b>Deepak Yadav</b><span class="pull-right">2 new</span></div>
-                    <div class="lv-small"><b>aur bhai collage kse chale rhai hai </b></div>
-                  </div>
-                </div>
-                <div class="lv-item media">
-                  <div class="lv-avatar pull-left"> <img src="/images/sumit.jpg" alt=""> </div>
-                  <div class="media-body">
-                    <div class="lv-title">Sumit kumar</div>
-                    <div class="lv-small">aur suna kya haal hai bhai, aur</div>
-                  </div>
-                </div>
-                <div class="lv-item media">
-                  <div class="lv-avatar pull-left"> <img src="/images/sega.jpg" alt=""> </div>
-                  <div class="media-body">
-                    <div class="lv-title">Sage Kalia</div>
-                    <div class="lv-small">abey kaha chala gya ?? mar gya kya ??</div>
-                  </div>
-                </div>
-                <div class="lv-item media">
-                  <div class="lv-avatar pull-left"> <img src="/images/gan.jpg" alt=""> </div>
-                  <div class="media-body">
-                    <div class="lv-title">Gagandeep Singh</div>
-                    <div class="lv-small">yeh ley eamil address sachin.yadav1212@gmail.com</div>
-                  </div>
-                </div>
-                <div class="lv-item media">
-                  <div class="lv-avatar pull-left"><img src="/images/vasu.jpg" alt=""> </div>
-                  <div class="media-body">
-                    <div class="lv-title">Vasu</div>
-                    <div class="lv-small">kal se classess start hai koi holiday nahi hai </div>
-                  </div>
-                </div>
-                <div class="lv-item media">
-                  <div class="lv-avatar pull-left"> <img src="/images/abc.jpg" alt=""> </div>
-                  <div class="media-body">
-                    <div class="lv-title">Deepu Singh</div>
-                    <div class="lv-small">okk byee gud night dude kal baaat karte hai </div>
-                  </div>
-                </div>
+                {% endfor %}
+                {% endif %}
               </div>
             </div>
             <div class="ms-body">
               <div class="listview lv-message">
+                {% if uid is not empty %}
                 <div class="lv-header-alt clearfix">
                   <div id="ms-menu-trigger">
                     <div class="line-wrap">
@@ -136,8 +92,9 @@
                       </ul>
                     </li>
                   </ul>
-                  <div style="font-size:12px; color:#ccc; text-align: center">TA的浏览器信息:{{ kh['ua'] }}</div>
+                  <div style="font-size:12px; color:#ccc; text-align: right">TA的浏览器信息:{{ kh['ua'] }}</div>
                 </div>
+                {% endif %}
                 <div class="lv-body" id="ms-scrollbar-right" style="overflow:scroll; overflow-x: hidden; height:520px;">
                   {% if history is not empty %}
                     {% for item in history %}
@@ -160,11 +117,11 @@
                       {% endif %}
                     {% endfor %}
                   {% endif %}
-                  <hr />
-                  <div style="text-align: center; font-size: 10px; margin-bottom: 150px; color: #0000cd">以上是之前的聊天记录</div>
                 </div>
                 <div class="clearfix"></div>
+                {% if uid is not empty %}
                 <div class="lv-footer ms-reply"> <textarea rows="10" id="text" placeholder="请输入内容，支出换行(ctrl+回车即可发送)"></textarea> <button id="push_button" class=""><span class="glyphicon glyphicon-send"></span></button></div>
+                {% endif %}
                   </div>
                 </div>
               </div>
@@ -201,7 +158,8 @@
     </div>
     {% endif %}
     <script src="//cdn.bootcss.com/jquery.form/3.20/jquery.form.min.js"></script>
-    <script src="./js/socket.js"></script>
+    <script type="text/javascript"> uid ='{{ uid }}'; </script>
+    <script src="/js/socket.js"></script>
     <script>
       $(function(){
         $('#login').modal({

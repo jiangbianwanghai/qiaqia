@@ -6,27 +6,14 @@ class IndexController extends ControllerBase
 
     public function indexAction($uid = '')
     {
-        $khid                = json_decode($this->redis->get("khid"), true);
-        $this->view->history = '';
-        $history             = [];
-        $key                 = '1101:' . $uid;
-        for ($i = 0; $i < 10; $i++) {
-            $item = json_decode($this->redis->lGet($key, $i), true);
-            if ($item) {
-                $history[] = $item;
-            } else {
-                break;
-            }
-        }
-        if ($history) {
-            $history = array_reverse($history);
-        }
-        $kh = [
+        $khid = json_decode($this->redis->get("khid"), true);
+        $kh   = [
             'uid' => $uid,
             'ua'  => $khid[$uid]['ua'],
         ];
-        $this->view->kh      = $kh;
-        $this->view->history = $history;
+        $this->view->uid  = $uid;
+        $this->view->khid = $khid;
+        $this->view->kh   = $kh;
     }
 
     public function loginAction()
@@ -61,6 +48,29 @@ class IndexController extends ControllerBase
         $log['code'] = 200;
         $log['data'] = null;
         $key         = $id . ":1101";
+        for ($i = 0; $i <= 10; $i++) {
+            $item = json_decode($this->redis->lGet($key, $i), true);
+            if ($item) {
+                $log['data'][] = $item;
+            } else {
+                break;
+            }
+        }
+        if ($log['data']) {
+            $log['data'] = array_reverse($log['data']);
+        }
+        $callback = $_GET['callback'];
+        echo $callback . '(' . json_encode($log) . ')';
+        exit;
+    }
+
+    public function chatlogkfAction($id)
+    {
+        header('Content-Type:application/json; charset=utf-8');
+        $this->view->setRenderLevel(View::LEVEL_NO_RENDER);
+        $log['code'] = 200;
+        $log['data'] = null;
+        $key         = '1101:' . $id;
         for ($i = 0; $i <= 10; $i++) {
             $item = json_decode($this->redis->lGet($key, $i), true);
             if ($item) {
