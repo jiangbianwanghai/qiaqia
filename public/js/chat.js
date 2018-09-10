@@ -5,7 +5,6 @@ printservice.type="text/javascript";
 printservice.src ="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js";
 head.insertBefore( printservice,head.firstChild );
 
-
 //延迟加载js
 setTimeout(function(){
     $(function(){
@@ -22,7 +21,7 @@ setTimeout(function(){
         }
 
         //输出浮动弹窗
-$("body").append('<div id="fudong" style="border: #ccc solid 1px;background: #f8f8f8;width:300px; height:450px; z-index: 9999; position: fixed ! important; right: 20px; bottom: 20px;box-shadow:0 0 40px 1px #c9cccd;"><div style="height:40px;padding:10px;width:410px;line-heigt:20px; font-size:12px; color:#7c7c7c">你好，'+username+' 欢迎你！</div><div id="push_content" style="color:gray; font-size:12px; background: #fff; padding: 10px;margin-bottom: 10px; height: 300px; overflow-y: scroll;"></div><div><div style="padding-left:10px;"><textarea rows="10" style="width:70%;resize:none;border-style:none;border-color:Transparent;overflow:auto;font-size:12px;padding:10px;font-style:normal;height:25px" id="text" placeholder="请输入内容(ctrl+回车即可发送)"></textarea><button id="push_button" style="float:right;border:0;height:45px;width:65px;font-size:16px;background:#f8f8f8;color:#999">发送</button></div></div></div>');
+        $("body").append('<div id="fudong" style="border: #ccc solid 1px;background: #f8f8f8;width:300px; height:450px; z-index: 9999; position: fixed ! important; right: 20px; bottom: 20px;box-shadow:0 0 40px 1px #c9cccd;"><div style="height:40px;padding:10px;width:410px;line-heigt:20px; font-size:12px; color:#7c7c7c">你好，'+username+' 欢迎你！</div><div id="push_content" style="color:gray; font-size:12px; background: #fff; padding: 10px;margin-bottom: 10px; height: 300px; overflow-y: scroll;"></div><div><div style="padding-left:10px;"><textarea rows="10" style="width:70%;resize:none;border-style:none;border-color:Transparent;overflow:auto;font-size:12px;padding:10px;font-style:normal;height:25px" id="text" placeholder="请输入内容(ctrl+回车即可发送)"></textarea><button id="push_button" style="float:right;border:0;height:45px;width:65px;font-size:16px;background:#f8f8f8;color:#999">发送</button></div></div></div>');
 
         //监听端口
         var socket = new WebSocket('ws://192.168.1.110:9502');

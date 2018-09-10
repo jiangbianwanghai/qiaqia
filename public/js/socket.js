@@ -43,7 +43,7 @@ $("body").keydown(function(event) {
 $("#push_button").click(function(){
     var text = $("#text").val();
     if (text) {
-        var messageObj = {post:1,role:'kf',msg:text};
+        var messageObj = {post:1,role:'kf',msg:text,khid:khid};
         var messageJson = JSON.stringify(messageObj);
         socket.send(messageJson);
         $("#text").val("");

@@ -111,7 +111,7 @@ $server->on('message', function ($server, $frame) use ($redis) {
         if (empty($kh[$data['uid']])) {
             $kh[$data['uid']] = [
                 'ua'     => $data['ua'],
-                'avatar' => $avatar[mt_rand(1, 8)],
+                'avatar' => $avatar[mt_rand(0, 7)],
             ];
             $redis->set("kh", json_encode($kh));
         }
@@ -122,6 +122,7 @@ $server->on('message', function ($server, $frame) use ($redis) {
          */
         $khtokf = json_decode($redis->get("khtokf"), true);
         $kftofd = json_decode($redis->get("kftofd"), true);
+        $kftokh = json_decode($redis->get("kftokh"), true);
         if (empty($khtokf[$data['uid']]) && !empty($kftofd)) {
             $kfid   = array_keys($kftofd);
             $random = mt_rand(0, count($kfid) - 1);
@@ -130,8 +131,14 @@ $server->on('message', function ($server, $frame) use ($redis) {
             $khtokf[$data['uid']] = $currkf;
             $redis->set("khtokf", json_encode($khtokf));
             //kftokh
-            $kftokh[$currkf] = $data['uid'];
-            $redis->set("kftokh", json_encode($kftokh));
+            if (!isset($kftokh[$currkf])) {
+                $kftokh[$currkf] = [$data['uid']];
+                $redis->set("kftokh", json_encode($kftokh));
+            } elseif (!in_array($data['uid'], $kftokh[$currkf])) {
+                array_unshift($kftokh[$currkf], $data['uid']);
+                $redis->set("kftokh", json_encode($kftokh));
+            }
+
         }
         $fdtokf = json_decode($redis->get("fdtokf"), true);
         if (empty($fdtokf)) {
@@ -195,7 +202,7 @@ $server->on('message', function ($server, $frame) use ($redis) {
             $khtofd = json_decode($redis->get("khtofd"), true);
 
             $currkf_uid = $fdtokf[$frame->fd];
-            $currkh_uid = $kftokh[$fdtokf[$frame->fd]];
+            $currkh_uid = $data['khid'];
 
             echo $currkf_uid . " to " . $currkh_uid . " " . $msg . PHP_EOL;
 
