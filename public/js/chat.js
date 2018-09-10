@@ -4,8 +4,7 @@ var printservice = document.createElement("script");
 printservice.type="text/javascript";
 printservice.src ="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js";
 head.insertBefore( printservice,head.firstChild );
-//输出浮动弹窗
-document.write('<div id="fudong" style="background: #f8f8f8;width:300px; height:450px; z-index: 9999; position: fixed ! important; right: 20px; bottom: 20px;box-shadow:0 0 40px 1px #c9cccd;"><div><div id="push_content" style="color:gray; font-size:12px; background: #fff;border: #ccc solid 1px; padding: 10px;margin-bottom: 10px; height: 360px; overflow-y: scroll;"></div><div><div style="padding-left:10px;"><textarea rows="10" style="width:70%;resize:none;border-style:none;border-color:Transparent;overflow:auto;font-size:12px;padding:10px;font-style:normal;height:25px" id="text" placeholder="请输入内容(ctrl+回车即可发送)"></textarea><button id="push_button" style="float:right;border:0;height:45px;width:65px;font-size:16px;background:#f8f8f8;color:#999">发送</button></div></div></div></div>');
+
 
 //延迟加载js
 setTimeout(function(){
@@ -21,6 +20,9 @@ setTimeout(function(){
             username = 'uid_' + new Date().getTime();
             setCookie('username', username, 365)
         }
+
+        //输出浮动弹窗
+$("body").append('<div id="fudong" style="border: #ccc solid 1px;background: #f8f8f8;width:300px; height:450px; z-index: 9999; position: fixed ! important; right: 20px; bottom: 20px;box-shadow:0 0 40px 1px #c9cccd;"><div style="height:40px;padding:10px;width:410px;line-heigt:20px; font-size:12px; color:#7c7c7c">你好，'+username+' 欢迎你！</div><div id="push_content" style="color:gray; font-size:12px; background: #fff; padding: 10px;margin-bottom: 10px; height: 300px; overflow-y: scroll;"></div><div><div style="padding-left:10px;"><textarea rows="10" style="width:70%;resize:none;border-style:none;border-color:Transparent;overflow:auto;font-size:12px;padding:10px;font-style:normal;height:25px" id="text" placeholder="请输入内容(ctrl+回车即可发送)"></textarea><button id="push_button" style="float:right;border:0;height:45px;width:65px;font-size:16px;background:#f8f8f8;color:#999">发送</button></div></div></div>');
 
         //监听端口
         var socket = new WebSocket('ws://192.168.1.110:9502');
@@ -44,9 +46,9 @@ setTimeout(function(){
                     if (data.data) {
                         for(var p in data.data){
                           if (data.data[p].me) {
-                            $("#push_content").append("<div style=\"color:#7c7c7c;text-align:right;float:right;padding-bottom:20px;\"><div style='text-align:left;width:200px; background:#ecf0f1;padding:10px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);'>"+data.data[p].msg+"</div><br />"+data.data[p].time+" from me</div>");
+                            $("#push_content").append("<div style=\"color:#7c7c7c;text-align:right;float:right;padding-bottom:20px;\"><div style='text-align:left;width:155px; background:#ecf0f1;padding:10px;padding-right:45px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);position:relative;'><div style=\"width:32px;height:32px;position:absolute;top:-10px;right:10px;\"><img src=\"http://qiaqia.im/images/"+data.data[p].avatar+"\" style=\"width:32px;height:32px\" /></div>"+data.data[p].msg+"</div><br />"+data.data[p].time+" from me</div>");
                           } else {
-                            $("#push_content").append("<div style=\"color:#7c7c7c;text-align:left;float:left;padding-bottom:20px;\"><div style='width:200px; background:#f5f5f5;padding:10px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);'>"+data.data[p].msg+"</div><br />"+data.data[p].time+"</div>");
+                            $("#push_content").append("<div style=\"color:#7c7c7c;text-align:left;float:left;padding-bottom:20px;\"><div style='width:155px; background:#f5f5f5;padding:10px;padding-left:45px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);position:relative;'><div style=\"width:32px;height:32px;position:absolute;top:-10px;left:10px;\"><img src=\"http://qiaqia.im/images/"+data.data[p].avatar+"\" style=\"width:32px;height:32px\" /></div>"+data.data[p].msg+"</div><br />"+data.data[p].time+"</div>");
                           }
                         }
                         $("#push_content").append("<div style=\"width:260px;padding-bottom:40px; height:30px;text-align:center; float:left;\">以上是之前的聊天记录<hr style=\"height:1px;border:none;border-top:1px solid #eee;\" /></div>");
@@ -84,10 +86,14 @@ setTimeout(function(){
         //接收到服务器数据时触发
         socket.onmessage = function (event) {
             Eventjson = JSON.parse(event.data);
-            if (Eventjson.me) {
-                $("#push_content").append("<div style=\"color:#7c7c7c;text-align:right;float:right;padding-bottom:20px;\"><div style='text-align:left;width:200px; background:#ecf0f1;padding:10px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);'>"+Eventjson.msg+"</div><br />"+Eventjson.time+" from me</div>");
+            if (Eventjson.from) {
+                $("#push_content").append("<div style=\"padding-top:10px;padding-bottom:10px;background-color:yellow;text-align:center;position:absolute;top:340px;left:0px;opacity:0.6;width:100%;height:20px;color:#ff0000\">"+Eventjson.msg+"</div>");
             } else {
-                $("#push_content").append("<div style=\"color:#7c7c7c;text-align:left;float:left;padding-bottom:20px;\"><div style='width:200px; background:#f5f5f5;padding:10px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);'>"+Eventjson.msg+"</div><br />"+Eventjson.time+"</div>");
+                if (Eventjson.me) {
+                    $("#push_content").append("<div style=\"color:#7c7c7c;text-align:right;float:right;padding-bottom:20px;\"><div style='text-align:left;width:155px; background:#ecf0f1;padding:10px;padding-right:45px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);position:relative;'><div style=\"width:32px;height:32px;position:absolute;top:-10px;right:10px;\"><img src=\"http://qiaqia.im/images/"+Eventjson.avatar+"\" style=\"width:32px;height:32px\" /></div>"+Eventjson.msg+"</div><br />"+Eventjson.time+" from me</div>");
+                } else {
+                    $("#push_content").append("<div style=\"color:#7c7c7c;text-align:left;float:left;padding-bottom:20px;\"><div style='width:155px; background:#f5f5f5;padding:10px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);position:relative;padding-left:45px;'><div style=\"width:32px;height:32px;position:absolute;top:-10px;left:10px;\"><img src=\"http://qiaqia.im/images/"+Eventjson.avatar+"\" style=\"width:32px;height:32px\" /></div>"+Eventjson.msg+"</div><br />"+Eventjson.time+"</div>");
+                }
             }
             $('#push_content').scrollTop( $('#push_content')[0].scrollHeight );
         };

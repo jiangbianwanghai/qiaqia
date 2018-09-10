@@ -133,6 +133,12 @@ $server->on('message', function ($server, $frame) use ($redis) {
             $kftokh[$currkf] = $data['uid'];
             $redis->set("kftokh", json_encode($kftokh));
         }
+        $fdtokf = json_decode($redis->get("fdtokf"), true);
+        if (empty($fdtokf)) {
+            $pushMsg     = ['from' => 'system', 'msg' => '系统客服暂时没有上线，你可以先留言。'];
+            $pushMsgJson = json_encode($pushMsg);
+            $server->push($frame->fd, $pushMsgJson);
+        }
     }
 
     /**
