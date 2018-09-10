@@ -49,10 +49,10 @@
               </div>
               <hr/>
               <div class="listview lv-user m-t-20">
-                {% if khid is not empty %}
-                {% for key,item in khid %}
-                <div class="lv-item media{{ uid == key ? ' active' : '' }}">
-                  <div class="lv-avatar pull-left"> <img src="/images/{{ item['avatar'] }}" alt="{{ uid }}"> </div>
+                {% if khlist is not empty %}
+                {% for key,item in khlist %}
+                <div class="lv-item media{{ khid == key ? ' active' : '' }}">
+                  <div class="lv-avatar pull-left"> <img src="/images/{{ item['avatar'] }}" alt="{{ item['avatar'] }}"> </div>
                   <div class="media-body">
                     <div class="lv-title"><a href="/chat/{{ key }}">{{ key }}</a></div>
                     <div class="lv-small">{{ item['ua'] }}</div>
@@ -64,7 +64,7 @@
             </div>
             <div class="ms-body">
               <div class="listview lv-message">
-                {% if uid is not empty %}
+                {% if khid is not empty %}
                 <div class="lv-header-alt clearfix">
                   <div id="ms-menu-trigger">
                     <div class="line-wrap">
@@ -74,8 +74,8 @@
                     </div>
                   </div>
                   <div class="lvh-label hidden-xs">
-                    <div class="lv-avatar pull-left"> <img src="/images/bhai.jpg" alt=""> </div>
-                    <span class="c-black">{{ kh['uid'] }}<span style=" margin-left:8px; position:absolute; margin-top:12px;width: 8px;height: 8px;line-height: 8px; border-radius: 50%; background-color:#80d3ab;"></span></span>
+                    <div class="lv-avatar pull-left"> <img src="/images/{{ curr_kh['avatar'] }}" alt="{{ curr_kh['avatar'] }}"> </div>
+                    <span class="c-black">{{ curr_kh['uid'] }}<span style=" margin-left:8px; position:absolute; margin-top:12px;width: 8px;height: 8px;line-height: 8px; border-radius: 50%; background-color:#80d3ab;"></span></span>
                   </div>
                   <ul class="lv-actions actions list-unstyled list-inline">
                     <li> <a href="#" > <i class="fa fa-check"></i> </a> </li>
@@ -92,34 +92,13 @@
                       </ul>
                     </li>
                   </ul>
-                  <div style="font-size:12px; color:#ccc; text-align: right">TA的浏览器信息:{{ kh['ua'] }}</div>
+                  <div style="font-size:12px; color:#ccc; text-align: right">TA的浏览器信息:{{ curr_kh['ua'] }}</div>
                 </div>
                 {% endif %}
                 <div class="lv-body" id="ms-scrollbar-right" style="overflow:scroll; overflow-x: hidden; height:520px;">
-                  {% if history is not empty %}
-                    {% for item in history %}
-                      {% if item['me'] %}
-                      <div class="lv-item media right">
-                        <div class="lv-avatar pull-right"> <img src="/images/avatar.jpg" alt=""> </div>
-                        <div class="media-body">
-                            <div class="ms-item">{{ item['msg'] }}</div>
-                            <small class="ms-date"><span class="glyphicon glyphicon-time"></span>&nbsp; {{ item['time'] }}</small>
-                        </div>
-                      </div>
-                      {% else %}
-                      <div class="lv-item media">
-                        <div class="lv-avatar pull-left"> <img src="/images/bhai.jpg" alt=""> </div>
-                        <div class="media-body">
-                            <div class="ms-item">{{ item['msg'] }}</div>
-                            <small class="ms-date"><span class="glyphicon glyphicon-time"></span>&nbsp; {{ item['time'] }}</small>
-                        </div>
-                      </div>
-                      {% endif %}
-                    {% endfor %}
-                  {% endif %}
                 </div>
                 <div class="clearfix"></div>
-                {% if uid is not empty %}
+                {% if khid is not empty %}
                 <div class="lv-footer ms-reply"> <textarea rows="10" id="text" placeholder="请输入内容，支出换行(ctrl+回车即可发送)"></textarea> <button id="push_button" class=""><span class="glyphicon glyphicon-send"></span></button></div>
                 {% endif %}
                   </div>

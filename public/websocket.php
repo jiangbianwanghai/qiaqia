@@ -95,28 +95,43 @@ $server->on('message', function ($server, $frame) use ($redis) {
      */
     if (!empty($data['kh'])) {
         $avatar = ['vasu.jpg', 'sumit.jpg', 'sega.jpg', 'gan.jpg', 'chota.jpg', 'bhai.jpg', 'ajit.jpg', 'abc.jpg'];
+
         //帐号 -> fd
-        $khtofd[$data['uid']] = [
-            'fd'     => $frame->fd,
-            'ua'     => $data['ua'],
-            'avatar' => $avatar[mt_rand(1, 8)],
-        ];
-        $khtofd = json_encode($khtofd);
-        $redis->set("khtofd", $khtofd);
+        $khtofd[$data['uid']] = $frame->fd;
+        $redis->set("khtofd", json_encode($khtofd));
+
         //fd -> 帐号
         $fdtokh[$frame->fd] = $data['uid'];
-        $fdtokh             = json_encode($fdtokh);
-        $redis->set("fdtokh", $fdtokh);
-        //查询客户端是否映射到了客服
+        $redis->set("fdtokh", json_encode($fdtokh));
+
+        /**
+         * 将新客户存入客户表
+         */
+        $kh = json_decode($redis->get("kh"), true); //读取客户表
+        if (empty($kh[$data['uid']])) {
+            $kh[$data['uid']] = [
+                'ua'     => $data['ua'],
+                'avatar' => $avatar[mt_rand(1, 8)],
+            ];
+            $redis->set("kh", json_encode($kh));
+        }
+
+        /**
+         * 将客户和客服建立关联
+         * 前提是客服必须已经在线了，如果不在线是没有办法建立关系的
+         */
         $khtokf = json_decode($redis->get("khtokf"), true);
         $kftofd = json_decode($redis->get("kftofd"), true);
-        if (empty($khtokf[$data['uid']])) {
-            $khtokf[$data['uid']] = '1101';
-            $khtokf               = json_encode($khtokf);
-            $redis->set("khtokf", $khtokf);
-            $kftokh['1101'] = $data['uid'];
-            $kftokh         = json_encode($kftokh);
-            $redis->set("kftokh", $kftokh);
+        if (empty($khtokf[$data['uid']]) && !empty($kftofd)) {
+            $kfid   = array_keys($kftofd);
+            $random = mt_rand(0, count($kfid) - 1);
+            $currkf = $kfid[$random];
+            //khtokf
+            $khtokf[$data['uid']] = $currkf;
+            $redis->set("khtokf", json_encode($khtokf));
+            //kftokh
+            $kftokh[$currkf] = $data['uid'];
+            $redis->set("kftokh", json_encode($kftokh));
         }
     }
 
@@ -124,64 +139,95 @@ $server->on('message', function ($server, $frame) use ($redis) {
      * 获取消息
      */
     if (!empty($data['post'])) {
-        $msg = strip_tags($data['msg']);
+        $msg = strip_tags($data['msg']); //为了安全，过滤掉html和js标签
+
         //客户端发送消息给客服
         if ($data['role'] == 'kh') {
             $fdtokh = json_decode($redis->get("fdtokh"), true);
             $khtokf = json_decode($redis->get("khtokf"), true);
             $kftofd = json_decode($redis->get("kftofd"), true);
             $khtofd = json_decode($redis->get("khtofd"), true);
-            echo $fdtokh[$frame->fd] . " to " . $khtokf[$fdtokh[$frame->fd]] . " " . $msg . PHP_EOL;
+            $kh     = json_decode($redis->get("kh"), true); //读取客户表
 
-            $pushMsg = json_encode([
-                'avatar' => $khtofd[$fdtokh[$frame->fd]]['avatar'],
+            $currkh_uid = $fdtokh[$frame->fd];
+            if (!empty($khtokf[$fdtokh[$frame->fd]])) {
+                $currkf_uid = $khtokf[$fdtokh[$frame->fd]];
+                $currkf_fd  = $kftofd[$currkf_uid]; //客服端fd
+            } else {
+                $currkf_uid = 'system';
+                $currkf_fd  = '';
+            }
+
+            echo $currkh_uid . " to " . $currkf_uid . " " . $msg . PHP_EOL;
+
+            $pushMsg = [
+                'avatar' => $kh[$currkh_uid]['avatar'],
                 'me'     => 1,
                 'msg'    => $msg,
                 'time'   => date("Y-m-d H:i:s"),
-            ]);
-            $key1 = $fdtokh[$frame->fd] . ':' . $khtokf[$fdtokh[$frame->fd]];
-            $redis->lPush($key1, $pushMsg);
-            $server->push($frame->fd, $pushMsg); //发给客户端信息
-            echo $kftofd[$khtokf[$fdtokh[$frame->fd]]] . PHP_EOL;
-            $pushMsg = json_encode([
-                'avatar' => $khtofd[$fdtokh[$frame->fd]]['avatar'],
-                'me'     => 0,
-                'msg'    => $msg,
-                'time'   => date("Y-m-d H:i:s"),
-            ]);
-            $key2 = $khtokf[$fdtokh[$frame->fd]] . ':' . $fdtokh[$frame->fd];
-            $redis->lPush($key2, $pushMsg);
-            $server->push($kftofd[$khtokf[$fdtokh[$frame->fd]]], $pushMsg); //发给客服端消息
+            ];
+            $pushMsgJson = json_encode($pushMsg);
+
+            $key1 = $currkh_uid . ':' . $currkf_uid; //客户的聊天日志表的key
+            $redis->lPush($key1, $pushMsgJson); //存入客户的聊天日志表
+            $server->push($frame->fd, $pushMsgJson); //给客户端推送消息
+
+            $pushMsg['me'] = 0;
+            $pushMsgJson   = json_encode($pushMsg);
+
+            $key2 = $currkf_uid . ':' . $currkh_uid; //客服的聊天日志表的key
+            $redis->lPush($key2, $pushMsgJson);
+            if ($currkf_fd) {
+                $server->push($currkf_fd, $pushMsgJson); //给客服端推送消息
+            }
         }
+
+        //客服发送消息给客户
         if ($data['role'] == 'kf') {
             $fdtokf = json_decode($redis->get("fdtokf"), true);
             $kftokh = json_decode($redis->get("kftokh"), true);
             $khtofd = json_decode($redis->get("khtofd"), true);
-            echo $fdtokf[$frame->fd] . " to " . $kftokh[$fdtokf[$frame->fd]] . " " . $msg . PHP_EOL;
-            $pushMsg = json_encode([
+
+            $currkf_uid = $fdtokf[$frame->fd];
+            $currkh_uid = $kftokh[$fdtokf[$frame->fd]];
+
+            echo $currkf_uid . " to " . $currkh_uid . " " . $msg . PHP_EOL;
+
+            $pushMsg = [
                 'avatar' => 'avatar.jpg',
                 'me'     => 1,
                 'msg'    => $msg,
                 'time'   => date("Y-m-d H:i:s"),
-            ]);
-            $key1 = $fdtokf[$frame->fd] . ':' . $kftokh[$fdtokf[$frame->fd]];
-            $redis->lPush($key1, $pushMsg);
-            $server->push($frame->fd, $pushMsg); //发给客服端信息
-            echo $khtofd[$kftokh[$fdtokf[$frame->fd]]]['fd'] . PHP_EOL;
-            $pushMsg = json_encode([
-                'avatar' => 'avatar.jpg',
-                'me'     => 0,
-                'msg'    => $msg,
-                'time'   => date("Y-m-d H:i:s"),
-            ]);
-            $key2 = $kftokh[$fdtokf[$frame->fd]] . ':' . $fdtokf[$frame->fd];
-            $redis->lPush($key2, $pushMsg);
-            $server->push($khtofd[$kftokh[$fdtokf[$frame->fd]]]['fd'], $pushMsg); //发客户服端消息
+            ];
+            $pushMsgJson = json_encode($pushMsg);
+
+            $key1 = $currkf_uid . ':' . $currkh_uid; //客服的聊天日志表的key
+            $redis->lPush($key1, $pushMsgJson); //存入客服的聊天日志表
+            $server->push($frame->fd, $pushMsgJson); //给客服端推送信息
+
+            $pushMsg['me'] = 0;
+            $pushMsgJson   = json_encode($pushMsg);
+            $currkh_fd     = $khtofd[$currkh_uid]; //客户的fd
+            $key2          = $currkh_uid . ':' . $currkf_uid; //客户的聊天日志表的Key
+            $redis->lPush($key2, $pushMsgJson);
+            $server->push($currkh_fd, $pushMsgJson); //给客户服端推送消息
         }
     }
 });
 
 $server->on('close', function ($server, $fd) use ($redis) {
+    $fdtokf = json_decode($redis->get("fdtokf"), true);
+    $fdtokh = json_decode($redis->get("fdtokh"), true);
+    //客服退出时清理客服连接池
+    if (!empty($fdtokf[$fd])) {
+        unset($fdtokf[$fd]);
+        $redis->set("fdtokf", json_encode($fdtokf));
+    }
+    //客户退出时清理客户连接池
+    if (!empty($fdtokh[$fd])) {
+        unset($fdtokh[$fd]);
+        $redis->set("fdtokh", json_encode($fdtokh));
+    }
     echo "connection close: {$fd}\n";
 });
 
