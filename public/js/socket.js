@@ -4,30 +4,32 @@ var socket = new WebSocket('ws://192.168.1.110:9502');
 socket.onopen = function () {
     $("#ms-scrollbar-right").append("<div style=\"text-align: center; font-size: 10px; margin-bottom: 150px; color: #ccc\">-—— 连接服务器成功 ——-</div>");
     console.log('Connected!');
-    var messageObj = {kf:1,uid:"1101"};
+    var messageObj = {kf:1,uid:kfid};
     var messageJson = JSON.stringify(messageObj);
     socket.send(messageJson);
-    //读取聊天日志
-    $.ajax({
-      type: "GET",
-      dataType:'jsonp',
-      url: "http://qiaqia.im/chatlogkf/"+uid,
-      success : function(data) {
-        if (data.code == 200) {
-            if (data.data) {
-                for(var p in data.data){
-                  if (data.data[p].me) {
-                    $("#ms-scrollbar-right").append("<div class=\"lv-item media right\"><div class=\"lv-avatar pull-right\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\"\"> </div><div class=\"media-body\"><div class=\"ms-item\"> "+data.data[p].msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+data.data[p].time+"</small></div></div>");
-                  } else {
-                    $("#ms-scrollbar-right").append("<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\"\"></div><div class=\"media-body\"><div class=\"ms-item\"> <span class=\"glyphicon glyphicon-triangle-left\" style=\"color:#000000;\"></span> "+data.data[p].msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+data.data[p].time+"</small></div></div>");
-                  }
+    if (khid) {
+        //读取聊天日志
+        $.ajax({
+          type: "GET",
+          dataType:'jsonp',
+          url: "http://qiaqia.im/chatlogkf/"+khid,
+          success : function(data) {
+            if (data.code == 200) {
+                if (data.data) {
+                    for(var p in data.data){
+                      if (data.data[p].me) {
+                        $("#ms-scrollbar-right").append("<div class=\"lv-item media right\"><div class=\"lv-avatar pull-right\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\"\"> </div><div class=\"media-body\"><div class=\"ms-item\"> "+data.data[p].msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+data.data[p].time+"</small></div></div>");
+                      } else {
+                        $("#ms-scrollbar-right").append("<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\"\"></div><div class=\"media-body\"><div class=\"ms-item\"> <span class=\"glyphicon glyphicon-triangle-left\" style=\"color:#000000;\"></span> "+data.data[p].msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+data.data[p].time+"</small></div></div>");
+                      }
+                    }
+                    $("#ms-scrollbar-right").append("<hr /><div style=\"text-align: center; font-size: 10px; margin-bottom: 150px; color: #0000cd\">以上是之前的聊天记录</div>");
+                    $('#ms-scrollbar-right').scrollTop( $('#ms-scrollbar-right')[0].scrollHeight );
                 }
-                $("#ms-scrollbar-right").append("<hr /><div style=\"text-align: center; font-size: 10px; margin-bottom: 150px; color: #0000cd\">以上是之前的聊天记录</div>");
-                $('#ms-scrollbar-right').scrollTop( $('#ms-scrollbar-right')[0].scrollHeight );
             }
-        }
-      }
-    })
+          }
+        })
+    }
 };
 
 //监听键盘回车键

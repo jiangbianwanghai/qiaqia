@@ -158,7 +158,8 @@
     </div>
     {% endif %}
     <script src="//cdn.bootcss.com/jquery.form/3.20/jquery.form.min.js"></script>
-    <script type="text/javascript"> uid ='{{ uid }}'; </script>
+    <script type="text/javascript"> kfid ='{{ account }}'; </script>
+    <script type="text/javascript"> khid ='{{ khid }}'; </script>
     <script src="/js/socket.js"></script>
     <script>
       $(function(){
@@ -179,6 +180,34 @@
                 alert(data.msg);
               } else {
                 $('#login').modal('hide');
+                var socket = new WebSocket('ws://192.168.1.110:9502');
+                socket.onopen = function () {
+                  $("#ms-scrollbar-right").append("<div style=\"text-align: center; font-size: 10px; margin-bottom: 150px; color: #ccc\">-—— 连接服务器成功 ——-</div>");
+                  console.log('Connected!');
+                  var messageObj = {kf:1,uid:data.kfid};
+                  var messageJson = JSON.stringify(messageObj);
+                  socket.send(messageJson);
+                };
+                socket.onmessage = function (event) {
+                  Eventjson = JSON.parse(event.data);
+                  if (Eventjson.me) {
+                      $("#ms-scrollbar-right").append("<div class=\"lv-item media right\"><div class=\"lv-avatar pull-right\"> <img src=\"/images/"+Eventjson.avatar+"\" alt=\"\"> </div><div class=\"media-body\"><div class=\"ms-item\"> "+Eventjson.msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+Eventjson.time+"</small></div></div>");
+                  } else {
+                      $("#ms-scrollbar-right").append("<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+Eventjson.avatar+"\" alt=\"\"></div><div class=\"media-body\"><div class=\"ms-item\"> <span class=\"glyphicon glyphicon-triangle-left\" style=\"color:#000000;\"></span> "+Eventjson.msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+Eventjson.time+"</small></div></div>");
+                  }
+                  $('#ms-scrollbar-right').scrollTop( $('#ms-scrollbar-right')[0].scrollHeight );
+                };
+
+                //与服务器连接断开触发
+                socket.onclose = function () {
+                    $("#ms-scrollbar-right").append("<div style=\"text-align: center; font-size: 10px; margin-bottom: 150px; color: #ccc\">-—— 与服务器连接断开 ——-</div>");
+                    console.log('Lost connection!');
+                };
+
+                //与服务器连接出现错误触发
+                socket.onerror = function () {
+                    console.log('Error!');
+                };
               }
             }
           });

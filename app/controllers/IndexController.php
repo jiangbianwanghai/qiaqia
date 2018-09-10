@@ -4,16 +4,16 @@ use Phalcon\Mvc\View;
 class IndexController extends ControllerBase
 {
 
-    public function indexAction($uid = '')
+    public function indexAction($khid = '')
     {
-        $khid = json_decode($this->redis->get("khid"), true);
-        $kh   = [
-            'uid' => $uid,
-            'ua'  => $khid[$uid]['ua'],
+        $khtofd = json_decode($this->redis->get("khtofd"), true);
+        $kh     = [
+            'uid' => $khid,
+            'ua'  => $khtofd[$khid]['ua'],
         ];
-        $this->view->uid  = $uid;
-        $this->view->khid = $khid;
-        $this->view->kh   = $kh;
+        $this->view->khid   = $khid;
+        $this->view->khtofd = $khtofd;
+        $this->view->kh     = $kh;
     }
 
     public function loginAction()
@@ -28,7 +28,7 @@ class IndexController extends ControllerBase
         $password = $this->request->getPost('password', ['trim', 'alphanum']);
         if (isset($db_account_table[$account])) {
             if ($db_account_table[$account] == $password) {
-                $json = ['code' => 0, 'msg' => null];
+                $json = ['code' => 0, 'msg' => null, 'kfid' => $account];
                 $auth = serialize(['account' => $account]);
                 $this->cookies->set('auth', $auth, time() + 15 * 86400);
             } else {
