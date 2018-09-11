@@ -10,6 +10,13 @@ $router->add(
     ]
 );
 $router->add(
+    '/logout',
+    [
+        'controller' => 'index',
+        'action'     => 'logout',
+    ]
+);
+$router->add(
     '/signup',
     [
         'controller' => 'index',
@@ -42,6 +49,13 @@ $router->add(
     [
         'controller' => 'index',
         'action'     => 'index',
+    ]
+);
+$router->add(
+    '/kh/live',
+    [
+        'controller' => 'index',
+        'action'     => 'livekh',
     ]
 );
 

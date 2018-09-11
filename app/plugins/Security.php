@@ -40,6 +40,7 @@ class Security extends Plugin
                 'UnverifiedResources' => [
                     'index' => [
                         'index',
+                        'livekh',
                         'logout',
                     ],
                 ],
@@ -47,6 +48,7 @@ class Security extends Plugin
                 'VerifiedResources'   => [
                     'index' => [
                         'index',
+                        'livekh',
                         'logout',
                     ],
                 ],
@@ -54,6 +56,7 @@ class Security extends Plugin
                 'AdminResources'      => [
                     'index' => [
                         'index',
+                        'livekh',
                         'logout',
                     ],
                 ],

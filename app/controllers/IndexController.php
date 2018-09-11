@@ -183,4 +183,24 @@ class IndexController extends ControllerBase
         $this->response->setHeader('HTTP/1.0 404', 'Not Found');
     }
 
+    public function livekhAction()
+    {
+        header('Content-Type:application/json; charset=utf-8');
+        $this->view->setRenderLevel(View::LEVEL_NO_RENDER);
+        $output['code'] = 200;
+        $output['data'] = null;
+        $khtofd         = json_decode($this->redis->get("khtofd"), true);
+        $kftokh         = json_decode($this->redis->get("kftokh"), true);
+        $kh             = json_decode($this->redis->get("kh"), true);
+        if (!empty($kftokh[$this->view->account])) {
+            $khidarr = (array) $kftokh[$this->view->account];
+            foreach ($khidarr as $key => $value) {
+                $output['data'][] = $kh[$value];
+            }
+        }
+        $callback = $_GET['callback'];
+        echo $callback . '(' . json_encode($output) . ')';
+        exit;
+    }
+
 }

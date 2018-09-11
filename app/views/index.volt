@@ -40,27 +40,12 @@
             <div class="ms-menu" style="overflow:scroll; overflow-x: hidden;" id="ms-scrollbar">
               <div class="ms-block">
                 <div class="ms-user">
-                  <img src="/images/avatar.jpg" alt="">
-                  <h5 class="q-title" align="center">工号:{{ account }} <br/><b>5</b> New Messages</h5>
+                  <img src="/images/avatar/avator_02.jpg" alt="">
+                  <h5 class="q-title" align="center">jiangbianwanghai <br/><br/><b>~ | ~</b> <a href="/logout">退出</a> <b>~ | ~</b></h5>
                 </div>
-              </div>
-              <div class="ms-block">
-                <a class="btn btn-primary btn-block ms-new" href="#"><span class="glyphicon glyphicon-envelope"></span>&nbsp; New Message</a>
               </div>
               <hr/>
-              <div class="listview lv-user m-t-20">
-                {% if khlist is not empty %}
-                {% for key,item in khlist %}
-                <div class="lv-item media{{ khid == key ? ' active' : '' }}">
-                  <div class="lv-avatar pull-left"> <img src="/images/{{ item['avatar'] }}" alt="{{ item['avatar'] }}"> </div>
-                  <div class="media-body">
-                    <div class="lv-title"><a href="/chat/{{ key }}">{{ key }}</a></div>
-                    <div class="lv-small">{{ item['ua'] }}</div>
-                  </div>
-                </div>
-                {% endfor %}
-                {% endif %}
-              </div>
+              <div class="listview lv-user m-t-20" id="kh_left_menu"></div>
             </div>
             <div class="ms-body">
               <div class="listview lv-message">
@@ -109,90 +94,8 @@
     </section>
     <script type="text/javascript" src="/css/jquery.js"></script>
     <script src="/css/bootstrap.min.js"></script>
-    {% if account is empty %}
-    <!-- 登录面板 -->
-    <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="exampleModalLabel">客服登录面板</h4>
-          </div>
-          <div class="modal-body">
-            <form id="login-form">
-              <div class="form-group">
-                <label for="recipient-name" class="control-label">工号：</label>
-                <input type="text" name="account" class="form-control" id="recipient-name">
-              </div>
-              <div class="form-group">
-                <label for="message-text" class="control-label">密码：</label>
-                <input type="password" name="password" class="form-control" id="recipient-name">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" id="submit" class="btn btn-primary">提交</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
-    <script src="//cdn.bootcss.com/jquery.form/3.20/jquery.form.min.js"></script>
     <script type="text/javascript"> kfid ='{{ account }}'; </script>
     <script type="text/javascript"> khid ='{{ khid }}'; </script>
     <script src="/js/socket.js"></script>
-    <script>
-      $(function(){
-        $('#login').modal({
-          backdrop:'static',
-          keyboard:false
-        })
-        $('#login').on('shown.bs.modal', function () {
-          $('#recipient-name').focus();
-        })
-        $("#submit").click(function() {
-          $("#login-form").ajaxSubmit({
-            type:"post",
-            url: "/login",
-            dataType: "JSON",
-            success: function(data) {
-              if(data.code) {
-                alert(data.msg);
-              } else {
-                $('#login').modal('hide');
-                var socket = new WebSocket('ws://192.168.1.110:9502');
-                socket.onopen = function () {
-                  $("#ms-scrollbar-right").append("<div style=\"text-align: center; font-size: 10px; margin-bottom: 150px; color: #ccc\">-—— 连接服务器成功 ——-</div>");
-                  console.log('Connected!');
-                  var messageObj = {kf:1,uid:data.kfid};
-                  var messageJson = JSON.stringify(messageObj);
-                  socket.send(messageJson);
-                };
-                socket.onmessage = function (event) {
-                  Eventjson = JSON.parse(event.data);
-                  if (Eventjson.me) {
-                      $("#ms-scrollbar-right").append("<div class=\"lv-item media right\"><div class=\"lv-avatar pull-right\"> <img src=\"/images/"+Eventjson.avatar+"\" alt=\"\"> </div><div class=\"media-body\"><div class=\"ms-item\"> "+Eventjson.msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+Eventjson.time+"</small></div></div>");
-                  } else {
-                      $("#ms-scrollbar-right").append("<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+Eventjson.avatar+"\" alt=\"\"></div><div class=\"media-body\"><div class=\"ms-item\"> <span class=\"glyphicon glyphicon-triangle-left\" style=\"color:#000000;\"></span> "+Eventjson.msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+Eventjson.time+"</small></div></div>");
-                  }
-                  $('#ms-scrollbar-right').scrollTop( $('#ms-scrollbar-right')[0].scrollHeight );
-                };
-
-                //与服务器连接断开触发
-                socket.onclose = function () {
-                    $("#ms-scrollbar-right").append("<div style=\"text-align: center; font-size: 10px; margin-bottom: 150px; color: #ccc\">-—— 与服务器连接断开 ——-</div>");
-                    console.log('Lost connection!');
-                };
-
-                //与服务器连接出现错误触发
-                socket.onerror = function () {
-                    console.log('Error!');
-                };
-              }
-            }
-          });
-          return false;
-        });
-      });
-    </script>
   </body>
 </html>

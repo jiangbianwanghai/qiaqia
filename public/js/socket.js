@@ -56,12 +56,34 @@ $("#push_button").click(function(){
 
 socket.onmessage = function (event) {
     Eventjson = JSON.parse(event.data);
-    if (Eventjson.me) {
-        $("#ms-scrollbar-right").append("<div class=\"lv-item media right\"><div class=\"lv-avatar pull-right\"> <img src=\"/images/"+Eventjson.avatar+"\" alt=\"\"> </div><div class=\"media-body\"><div class=\"ms-item\"> "+Eventjson.msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+Eventjson.time+"</small></div></div>");
-    } else {
-        $("#ms-scrollbar-right").append("<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+Eventjson.avatar+"\" alt=\"\"></div><div class=\"media-body\"><div class=\"ms-item\"> <span class=\"glyphicon glyphicon-triangle-left\" style=\"color:#000000;\"></span> "+Eventjson.msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+Eventjson.time+"</small></div></div>");
+    //刷新左侧客户列表
+    if (Eventjson.op == 'flash_kh_menu') {
+        $.ajax({
+          type: "GET",
+          dataType:'jsonp',
+          url: "http://weqia.live/kh/live",
+          success : function(data) {
+            if (data.code == 200) {
+                if (data.data) {
+                    var leftmenu = '';
+                    for(var p in data.data){
+                        leftmenu = leftmenu + "<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\""+data.data[p].avatar+"\"> </div><div class=\"media-body\"><div class=\"lv-title\"><a href=\"/#chat!"+data.data[p].uid+"\">"+data.data[p].uid+"</a></div><div class=\"lv-small\">"+data.data[p].ua+"</div></div></div>";
+                    }
+                    $("#kh_left_menu").html(leftmenu);
+                }
+            }
+          }
+        })
     }
-    $('#ms-scrollbar-right').scrollTop( $('#ms-scrollbar-right')[0].scrollHeight );
+    //更新右侧列表
+    if (Eventjson.op == 'msg') {
+        if (Eventjson.me) {
+            $("#ms-scrollbar-right").append("<div class=\"lv-item media right\"><div class=\"lv-avatar pull-right\"> <img src=\"/images/"+Eventjson.avatar+"\" alt=\"\"> </div><div class=\"media-body\"><div class=\"ms-item\"> "+Eventjson.msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+Eventjson.time+"</small></div></div>");
+        } else {
+            $("#ms-scrollbar-right").append("<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+Eventjson.avatar+"\" alt=\"\"></div><div class=\"media-body\"><div class=\"ms-item\"> <span class=\"glyphicon glyphicon-triangle-left\" style=\"color:#000000;\"></span> "+Eventjson.msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+Eventjson.time+"</small></div></div>");
+        }
+        $('#ms-scrollbar-right').scrollTop( $('#ms-scrollbar-right')[0].scrollHeight );
+    }
 };
 
 //与服务器连接断开触发

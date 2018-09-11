@@ -113,6 +113,7 @@ $server->on('message', function ($server, $frame) use ($redis) {
         $kh = json_decode($redis->get("kh"), true); //读取客户表
         if (empty($kh[$data['uid']])) {
             $kh[$data['uid']] = [
+                'uid'    => $data['uid'],
                 'ua'     => $data['ua'],
                 'avatar' => $avatar[mt_rand(0, 7)],
             ];
@@ -141,7 +142,13 @@ $server->on('message', function ($server, $frame) use ($redis) {
                 array_unshift($kftokh[$currkf], $data['uid']);
                 $redis->set("kftokh", json_encode($kftokh));
             }
-
+            //发送刷新左侧客户列表信号
+            $flashKhMenu = json_encode(['from' => $data['uid'], 'op' => 'flash_kh_menu']);
+            $server->push($kftofd[$currkf], $flashKhMenu);
+        } else {
+            //发送刷新左侧客户列表信号
+            $flashKhMenu = json_encode(['from' => $data['uid'], 'op' => 'flash_kh_menu']);
+            $server->push($kftofd[$khtokf[$data['uid']]], $flashKhMenu);
         }
         $fdtokf = json_decode($redis->get("fdtokf"), true);
         if (empty($fdtokf)) {
