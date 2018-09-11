@@ -19,6 +19,29 @@ use Phalcon\Session\Adapter\Files as SessionAdapter;
  */
 $di = new FactoryDefault();
 
+//增加控制器和方法找不到后指向error404
+$di->set('dispatcher', function () use ($di) {
+    $eventsManager = new \Phalcon\Events\Manager();
+    $eventsManager->attach("dispatch", function ($event, $dispatcher, $exception) {
+        if ($event->getType() == 'beforeException') {
+            switch ($exception->getCode()) {
+                case \Phalcon\Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+                case \Phalcon\Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+                    $dispatcher->forward(array(
+                        'controller' => 'index',
+                        'action'     => 'error404',
+                    ));
+                    return false;
+            }
+        }
+    });
+    $security = new Security($di);
+    $eventsManager->attach('dispatch', $security);
+    $dispatcher = new \Phalcon\Mvc\Dispatcher();
+    $dispatcher->setEventsManager($eventsManager);
+    return $dispatcher;
+});
+
 /**
  * The URL component is used to generate all kind of urls in the application
  */

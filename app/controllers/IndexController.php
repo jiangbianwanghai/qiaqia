@@ -3,6 +3,7 @@ use Phalcon\Mvc\View;
 
 class IndexController extends ControllerBase
 {
+    public $tbl = APP_PATH . '/app/db/user.tbl';
 
     public function indexAction($khid = '')
     {
@@ -28,27 +29,86 @@ class IndexController extends ControllerBase
         $this->view->curr_kh = $curr_kh;
     }
 
-    public function loginAction()
+    /**
+     * 登录&注册面板
+     */
+    public function authAction()
+    {
+        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+    }
+
+    /**
+     * 注册处理
+     *
+     * 如果用户表不存在，则初始化一个管理员帐号；如果存在则比对库中的帐号和注册的帐号是否冲突，不冲突则存入库中
+     */
+    public function signupAction()
     {
         $this->view->setRenderLevel(View::LEVEL_NO_RENDER);
-        $db_account_table = [
-            '1101' => '123456',
-            '1102' => '123456',
-            '1103' => '123456',
-        ];
-        $account  = $this->request->getPost('account', ['trim', 'int']);
-        $password = $this->request->getPost('password', ['trim', 'alphanum']);
-        if (isset($db_account_table[$account])) {
-            if ($db_account_table[$account] == $password) {
-                $json = ['code' => 0, 'msg' => null, 'kfid' => $account];
-                $auth = serialize(['account' => $account]);
+        if ($this->request->isPost()) {
+            $username = $this->request->getPost('username', ['trim', 'string']);
+            $email    = $this->request->getPost('email', ['trim', 'string']);
+            $password = $this->request->getPost('password', ['trim', 'alphanum']);
+            if (!file_exists($this->tbl)) {
+                $initUser['admin@weqia.live'] = [
+                    'username'    => 'admin',
+                    'email'       => 'admin@weqia.live',
+                    'password'    => '123456',
+                    'active'      => 1, //是否为激活用户
+                    'create_time' => time(),
+                ];
+                file_put_contents($this->tbl, json_encode($initUser));
+                $json = ['code' => 0, 'msg' => '初始化管理员帐号成功'];
+            } else {
+                $userTable = json_decode(file_get_contents($this->tbl), true);
+                $flag      = false; //冲突标识，默认不冲突
+                foreach ($userTable as $key => $value) {
+                    if ($key == $email) {
+                        $flag = true;
+                        break;
+                    }
+                }
+                if ($flag) {
+                    $json = ['code' => 1, 'msg' => '此邮箱已经存在，请更换'];
+                } else {
+                    $userTable[$email] = [
+                        'username'    => $username,
+                        'password'    => $password,
+                        'email'       => $email,
+                        'active'      => 0, //是否为激活用户，默认是未经邮箱验证的用户
+                        'create_time' => time(),
+                    ];
+                    file_put_contents($this->tbl, json_encode($userTable));
+                    $json = ['code' => 0, 'msg' => '注册成功，请登录', 'url' => '/'];
+                }
+            }
+        } else {
+            $json = ['code' => 1, 'msg' => '只接收post提交'];
+        }
+        $this->response->setJsonContent($json);
+        return $this->response;
+    }
+
+    /**
+     * 登录处理
+     */
+    public function signinAction()
+    {
+        $this->view->setRenderLevel(View::LEVEL_NO_RENDER);
+        $userTable = json_decode(file_get_contents($this->tbl), true);
+        $email     = $this->request->getPost('email', ['trim', 'string']);
+        $password  = $this->request->getPost('password', ['trim', 'alphanum']);
+        if (isset($userTable[$email])) {
+            if ($userTable[$email]['password'] == $password) {
+                $json = ['code' => 0, 'msg' => null, 'url' => '/'];
+                $auth = serialize(['account' => $email, 'acl_group' => 'Admin']);
                 //$this->cookies->set('auth', $auth, time() + 15 * 86400);
                 $this->cookies->set('auth', $auth);
             } else {
                 $json = ['code' => 2, 'msg' => '密码不正确'];
             }
         } else {
-            $json = ['code' => 1, 'msg' => '工号不存在'];
+            $json = ['code' => 1, 'msg' => '帐号不存在'];
         }
         $this->response->setJsonContent($json);
         return $this->response;
@@ -109,6 +169,18 @@ class IndexController extends ControllerBase
         $callback = $_GET['callback'];
         echo $callback . '(' . json_encode($log) . ')';
         exit;
+    }
+
+    public function logoutAction()
+    {
+        $this->cookies->get('auth')->delete();
+        $this->response->redirect('/auth', true);
+    }
+
+    public function error404Action()
+    {
+        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+        $this->response->setHeader('HTTP/1.0 404', 'Not Found');
     }
 
 }

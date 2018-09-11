@@ -3,10 +3,24 @@
 $router = $di->getRouter();
 
 $router->add(
-    '/login',
+    '/auth',
     [
         'controller' => 'index',
-        'action'     => 'login',
+        'action'     => 'auth',
+    ]
+);
+$router->add(
+    '/signup',
+    [
+        'controller' => 'index',
+        'action'     => 'signup',
+    ]
+);
+$router->add(
+    '/signin',
+    [
+        'controller' => 'index',
+        'action'     => 'signin',
     ]
 );
 $router->add(
