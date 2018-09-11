@@ -97,12 +97,15 @@ $server->on('message', function ($server, $frame) use ($redis) {
         $avatar = ['vasu.jpg', 'sumit.jpg', 'sega.jpg', 'gan.jpg', 'chota.jpg', 'bhai.jpg', 'ajit.jpg', 'abc.jpg'];
 
         //帐号 -> fd
-        $khtofd[$data['uid']] = $frame->fd;
-        $redis->set("khtofd", json_encode($khtofd));
-
-        //fd -> 帐号
-        $fdtokh[$frame->fd] = $data['uid'];
-        $redis->set("fdtokh", json_encode($fdtokh));
+        $khtofd = json_decode($redis->get("khtofd"), true);
+        $fdtokh = json_decode($redis->get("fdtokh"), true);
+        if (empty($khtofd[$data['uid']])) {
+            $khtofd[$data['uid']] = $frame->fd;
+            $redis->set("khtofd", json_encode($khtofd));
+            //fd -> 帐号
+            $fdtokh[$frame->fd] = $data['uid'];
+            $redis->set("fdtokh", json_encode($fdtokh));
+        }
 
         /**
          * 将新客户存入客户表
