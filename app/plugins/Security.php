@@ -32,6 +32,7 @@ class Security extends Plugin
                 'GuestResources'      => [
                     'index' => [
                         'auth',
+                        'chatlog',
                         'signin',
                         'signup',
                     ],
@@ -85,7 +86,7 @@ class Security extends Plugin
             $role = $auth['acl_group'];
         } else {
             $role = 'Guest';
-            if (!in_array($action, ['auth', 'signin', 'signup'])) {
+            if (!in_array($action, ['auth', 'chatlog', 'signin', 'signup'])) {
                 header("Location: /auth");
             }
         }

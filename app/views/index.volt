@@ -41,7 +41,7 @@
               <div class="ms-block">
                 <div class="ms-user">
                   <img src="/images/avatar/avator_02.jpg" alt=""><span style=" margin-left:-10px; position:absolute; margin-top:28px;width: 10px;height: 10px;line-height: 8px; border-radius: 50%; background-color:#80d3ab;"></span>
-                  <h5 class="q-title" align="center">jiangbianwanghai <br/><br/><b>~ | ~</b> <a href="/logout">退出</a> <b>~ | ~</b></h5>
+                  <h5 class="q-title chat2" align="center">{{ account }} <br/><br/><b>~ | ~</b> <a href="/logout">退出</a> <b>~ | ~</b></h5>
                 </div>
               </div>
               <hr/>
@@ -49,8 +49,7 @@
             </div>
             <div class="ms-body">
               <div class="listview lv-message">
-                {% if khid is not empty %}
-                <div class="lv-header-alt clearfix">
+                <div class="lv-header-alt clearfix" id="top_nav" data-id="" style="display: none;">
                   <div id="ms-menu-trigger">
                     <div class="line-wrap">
                       <div class="line top"></div>
@@ -79,13 +78,10 @@
                   </ul>
                   <div style="font-size:12px; color:#ccc; text-align: right">TA的浏览器信息:{{ curr_kh['ua'] }}</div>
                 </div>
-                {% endif %}
                 <div class="lv-body" id="ms-scrollbar-right" style="overflow:scroll; overflow-x: hidden; height:520px;">
                 </div>
                 <div class="clearfix"></div>
-                {% if khid is not empty %}
-                <div class="lv-footer ms-reply"> <textarea rows="10" id="text" placeholder="请输入内容，支出换行(ctrl+回车即可发送)"></textarea> <button id="push_button" class=""><span class="glyphicon glyphicon-send"></span></button></div>
-                {% endif %}
+                <div class="lv-footer ms-reply" id="editor" style="display: none;"> <textarea rows="10" id="text" placeholder="请输入内容，支出换行(ctrl+回车即可发送)"></textarea> <button id="push_button" class=""><span class="glyphicon glyphicon-send"></span></button></div>
                   </div>
                 </div>
               </div>

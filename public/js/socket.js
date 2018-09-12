@@ -11,7 +11,7 @@ $.ajax({
                 if (data.data[p].online) {
                     onlinepaopao = "<span style=\" margin-left:-10px; position:absolute; margin-top:24px;width: 10px;height: 10px;line-height: 8px; border-radius: 50%; background-color:#80d3ab;\"></span>";
                 }
-                leftmenu = leftmenu + "<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\""+data.data[p].avatar+"\">"+onlinepaopao+"</div><div class=\"media-body\"><div class=\"lv-title\"><a href=\"/#chat!"+data.data[p].uid+"\">"+data.data[p].uid+"</a></div><div class=\"lv-small\">"+data.data[p].ua+"</div></div></div>";
+                leftmenu = leftmenu + "<div class=\"lv-item media chat\" data-url=\""+data.data[p].uid+"\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\""+data.data[p].avatar+"\">"+onlinepaopao+"</div><div class=\"media-body\"><div class=\"lv-title\">"+data.data[p].uid+"</div><div class=\"lv-small\">"+data.data[p].ua+"</div></div></div>";
             }
             $("#kh_left_menu").html(leftmenu);
         }
@@ -64,6 +64,7 @@ $("body").keydown(function(event) {
 //发送消息
 $("#push_button").click(function(){
     var text = $("#text").val();
+    var khid = $("#top_nav").attr('data-id');
     if (text) {
         var messageObj = {post:1,role:'kf',msg:text,khid:khid};
         var messageJson = JSON.stringify(messageObj);
@@ -93,7 +94,7 @@ socket.onmessage = function (event) {
                         if (data.data[p].online) {
                             onlinepaopao = "<span style=\" margin-left:-10px; position:absolute; margin-top:24px;width: 10px;height: 10px;line-height: 8px; border-radius: 50%; background-color:#80d3ab;\"></span>";
                         }
-                        leftmenu = leftmenu + "<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\""+data.data[p].avatar+"\">"+onlinepaopao+"</div><div class=\"media-body\"><div class=\"lv-title\"><a href=\"/#chat!"+data.data[p].uid+"\">"+data.data[p].uid+"</a></div><div class=\"lv-small\">"+data.data[p].ua+"</div></div></div>";
+                        leftmenu = leftmenu + "<div class=\"lv-item media chat\" data-url=\""+data.data[p].uid+"\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\""+data.data[p].avatar+"\">"+onlinepaopao+"</div><div class=\"media-body\"><div class=\"lv-title\">"+data.data[p].uid+"</div><div class=\"lv-small\">"+data.data[p].ua+"</div></div></div>";
                     }
                     $("#kh_left_menu").html(leftmenu);
                 } else {
@@ -146,3 +147,12 @@ function setCookie(c_name,value,expiredays) {
     document.cookie=c_name+ "=" +escape(value)+
 ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
 }
+
+$("body").on("click", ".chat", function () {
+    var param = $(this).attr('data-url');
+    window.location.href = '/#chat!'+param;
+    $(this).addClass("active");
+    $("#editor").css('display','block');
+    $("#top_nav").css('display','block');
+    $("#top_nav").attr('data-id', param);
+});

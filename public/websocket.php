@@ -147,7 +147,7 @@ $server->on('message', function ($server, $frame) use ($redis) {
             $server->push($kftofd[$currkf], $flashKhMenu);
         } else {
             //发送刷新左侧客户列表信号
-            $flashKhMenu = json_encode(['from' => $data['uid'], 'to' => $currkf, 'op' => 'flash_kh_menu']);
+            $flashKhMenu = json_encode(['from' => $data['uid'], 'to' => $khtokf[$data['uid']], 'op' => 'flash_kh_menu']);
             $server->push($kftofd[$khtokf[$data['uid']]], $flashKhMenu);
         }
         echo $flashKhMenu . PHP_EOL;
