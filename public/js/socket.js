@@ -7,7 +7,11 @@ $.ajax({
         if (data.data) {
             var leftmenu = '';
             for(var p in data.data){
-                leftmenu = leftmenu + "<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\""+data.data[p].avatar+"\"> </div><div class=\"media-body\"><div class=\"lv-title\"><a href=\"/#chat!"+data.data[p].uid+"\">"+data.data[p].uid+"</a></div><div class=\"lv-small\">"+data.data[p].ua+"</div></div></div>";
+                var onlinepaopao = '';
+                if (data.data[p].online) {
+                    onlinepaopao = "<span style=\" margin-left:-10px; position:absolute; margin-top:24px;width: 10px;height: 10px;line-height: 8px; border-radius: 50%; background-color:#80d3ab;\"></span>";
+                }
+                leftmenu = leftmenu + "<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\""+data.data[p].avatar+"\">"+onlinepaopao+"</div><div class=\"media-body\"><div class=\"lv-title\"><a href=\"/#chat!"+data.data[p].uid+"\">"+data.data[p].uid+"</a></div><div class=\"lv-small\">"+data.data[p].ua+"</div></div></div>";
             }
             $("#kh_left_menu").html(leftmenu);
         }
@@ -33,6 +37,7 @@ socket.onopen = function () {
           success : function(data) {
             if (data.code == 200) {
                 if (data.data) {
+                    $("#ms-scrollbar-right").append("<div style=\"text-align: center; font-size: 10px; margin-bottom: 20px; color: #0000cd\">以上是之前的聊天记录</div><hr />");
                     for(var p in data.data){
                       if (data.data[p].me) {
                         $("#ms-scrollbar-right").append("<div class=\"lv-item media right\"><div class=\"lv-avatar pull-right\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\"\"> </div><div class=\"media-body\"><div class=\"ms-item\"> "+data.data[p].msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+data.data[p].time+"</small></div></div>");
@@ -40,7 +45,7 @@ socket.onopen = function () {
                         $("#ms-scrollbar-right").append("<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\"\"></div><div class=\"media-body\"><div class=\"ms-item\"> <span class=\"glyphicon glyphicon-triangle-left\" style=\"color:#000000;\"></span> "+data.data[p].msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+data.data[p].time+"</small></div></div>");
                       }
                     }
-                    $("#ms-scrollbar-right").append("<hr /><div style=\"text-align: center; font-size: 10px; margin-bottom: 150px; color: #0000cd\">以上是之前的聊天记录</div>");
+
                     $('#ms-scrollbar-right').scrollTop( $('#ms-scrollbar-right')[0].scrollHeight );
                 }
             }
@@ -83,8 +88,12 @@ socket.onmessage = function (event) {
             if (data.code == 200) {
                 if (data.data) {
                     var leftmenu = '';
-                    for(var p in data.data){
-                        leftmenu = leftmenu + "<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\""+data.data[p].avatar+"\"> </div><div class=\"media-body\"><div class=\"lv-title\"><a href=\"/#chat!"+data.data[p].uid+"\">"+data.data[p].uid+"</a></div><div class=\"lv-small\">"+data.data[p].ua+"</div></div></div>";
+                    for(var p in data.data) {
+                        var onlinepaopao = '';
+                        if (data.data[p].online) {
+                            onlinepaopao = "<span style=\" margin-left:-10px; position:absolute; margin-top:24px;width: 10px;height: 10px;line-height: 8px; border-radius: 50%; background-color:#80d3ab;\"></span>";
+                        }
+                        leftmenu = leftmenu + "<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\""+data.data[p].avatar+"\">"+onlinepaopao+"</div><div class=\"media-body\"><div class=\"lv-title\"><a href=\"/#chat!"+data.data[p].uid+"\">"+data.data[p].uid+"</a></div><div class=\"lv-small\">"+data.data[p].ua+"</div></div></div>";
                     }
                     $("#kh_left_menu").html(leftmenu);
                 } else {

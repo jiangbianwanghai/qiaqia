@@ -40,7 +40,7 @@
             <div class="ms-menu" style="overflow:scroll; overflow-x: hidden;" id="ms-scrollbar">
               <div class="ms-block">
                 <div class="ms-user">
-                  <img src="/images/avatar/avator_02.jpg" alt="">
+                  <img src="/images/avatar/avator_02.jpg" alt=""><span style=" margin-left:-10px; position:absolute; margin-top:28px;width: 10px;height: 10px;line-height: 8px; border-radius: 50%; background-color:#80d3ab;"></span>
                   <h5 class="q-title" align="center">jiangbianwanghai <br/><br/><b>~ | ~</b> <a href="/logout">退出</a> <b>~ | ~</b></h5>
                 </div>
               </div>

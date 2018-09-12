@@ -195,9 +195,12 @@ class IndexController extends ControllerBase
         if (!empty($kftokh[$this->view->account])) {
             $khidarr = (array) $kftokh[$this->view->account];
             foreach ($khidarr as $key => $value) {
+                $v           = $kh[$value];
+                $v['online'] = 0;
                 if (isset($khtofd[$value])) {
-                    $output['data'][] = $kh[$value];
+                    $v['online'] = 1;
                 }
+                $output['data'][] = $v;
             }
         }
         $callback = $_GET['callback'];
