@@ -95,7 +95,7 @@ socket.onmessage = function (event) {
         })
     }
     //更新右侧列表
-    if (Eventjson.op == 'msg') {
+    if (Eventjson.op == 'send_msg') {
         if (Eventjson.me) {
             $("#ms-scrollbar-right").append("<div class=\"lv-item media right\"><div class=\"lv-avatar pull-right\"> <img src=\"/images/"+Eventjson.avatar+"\" alt=\"\"> </div><div class=\"media-body\"><div class=\"ms-item\"> "+Eventjson.msg+"</div><small class=\"ms-date\"><span class=\"glyphicon glyphicon-time\"></span>&nbsp; "+Eventjson.time+"</small></div></div>");
         } else {

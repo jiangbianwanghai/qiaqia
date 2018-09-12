@@ -143,13 +143,14 @@ $server->on('message', function ($server, $frame) use ($redis) {
                 $redis->set("kftokh", json_encode($kftokh));
             }
             //发送刷新左侧客户列表信号
-            $flashKhMenu = json_encode(['from' => $data['uid'], 'op' => 'flash_kh_menu']);
+            $flashKhMenu = json_encode(['from' => $data['uid'], 'to' => $currkf, 'op' => 'flash_kh_menu']);
             $server->push($kftofd[$currkf], $flashKhMenu);
         } else {
             //发送刷新左侧客户列表信号
-            $flashKhMenu = json_encode(['from' => $data['uid'], 'op' => 'flash_kh_menu']);
+            $flashKhMenu = json_encode(['from' => $data['uid'], 'to' => $currkf, 'op' => 'flash_kh_menu']);
             $server->push($kftofd[$khtokf[$data['uid']]], $flashKhMenu);
         }
+        echo $flashKhMenu . PHP_EOL;
         $fdtokf = json_decode($redis->get("fdtokf"), true);
         if (empty($fdtokf)) {
             $pushMsg     = ['from' => 'system', 'msg' => '系统客服暂时没有上线，你可以先留言。'];
@@ -181,15 +182,17 @@ $server->on('message', function ($server, $frame) use ($redis) {
                 $currkf_fd  = '';
             }
 
-            echo $currkh_uid . " to " . $currkf_uid . " " . $msg . PHP_EOL;
-
             $pushMsg = [
+                'op'     => 'send_msg',
+                'from'   => $currkh_uid,
+                'to'     => $currkf_uid,
                 'avatar' => $kh[$currkh_uid]['avatar'],
                 'me'     => 1,
                 'msg'    => $msg,
                 'time'   => date("Y-m-d H:i:s"),
             ];
             $pushMsgJson = json_encode($pushMsg);
+            echo $pushMsgJson . PHP_EOL;
 
             $key1 = $currkh_uid . ':' . $currkf_uid; //客户的聊天日志表的key
             $redis->lPush($key1, $pushMsgJson); //存入客户的聊天日志表
@@ -214,15 +217,17 @@ $server->on('message', function ($server, $frame) use ($redis) {
             $currkf_uid = $fdtokf[$frame->fd];
             $currkh_uid = $data['khid'];
 
-            echo $currkf_uid . " to " . $currkh_uid . " " . $msg . PHP_EOL;
-
             $pushMsg = [
+                'op'     => 'send_msg',
+                'from'   => $currkf_uid,
+                'to'     => $currkh_uid,
                 'avatar' => 'avatar.jpg',
                 'me'     => 1,
                 'msg'    => $msg,
                 'time'   => date("Y-m-d H:i:s"),
             ];
             $pushMsgJson = json_encode($pushMsg);
+            echo $pushMsgJson . PHP_EOL;
 
             $key1 = $currkf_uid . ':' . $currkh_uid; //客服的聊天日志表的key
             $redis->lPush($key1, $pushMsgJson); //存入客服的聊天日志表
