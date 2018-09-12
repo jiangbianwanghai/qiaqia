@@ -57,6 +57,8 @@ class Security extends Plugin
                 'AdminResources'      => [
                     'index' => [
                         'index',
+                        'chatlog',
+                        'chatlogkf',
                         'livekh',
                         'logout',
                     ],

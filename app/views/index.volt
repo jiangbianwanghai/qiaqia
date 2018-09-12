@@ -41,7 +41,7 @@
               <div class="ms-block">
                 <div class="ms-user">
                   <img src="/images/avatar/avator_02.jpg" alt=""><span style=" margin-left:-10px; position:absolute; margin-top:28px;width: 10px;height: 10px;line-height: 8px; border-radius: 50%; background-color:#80d3ab;"></span>
-                  <h5 class="q-title chat2" align="center">{{ account }} <br/><br/><b>~ | ~</b> <a href="/logout">退出</a> <b>~ | ~</b></h5>
+                  <h5 class="q-title chat2" align="center">{{ username }} <br/><br/><b>~ | ~</b> <a href="/logout">退出</a> <b>~ | ~</b></h5>
                 </div>
               </div>
               <hr/>
@@ -58,8 +58,8 @@
                     </div>
                   </div>
                   <div class="lvh-label hidden-xs">
-                    <div class="lv-avatar pull-left"> <img src="/images/{{ curr_kh['avatar'] }}" alt="{{ curr_kh['avatar'] }}"> </div>
-                    <span class="c-black">{{ curr_kh['uid'] }}<span style=" margin-left:8px; position:absolute; margin-top:12px;width: 8px;height: 8px;line-height: 8px; border-radius: 50%; background-color:#80d3ab;"></span></span>
+                    <div class="lv-avatar pull-left"> <img src="" id="curr_kh_avatar"> </div>
+                    <span class="c-black" id="curr_kh_uid"></span>
                   </div>
                   <ul class="lv-actions actions list-unstyled list-inline">
                     <li> <a href="#" > <i class="fa fa-check"></i> </a> </li>
@@ -76,7 +76,7 @@
                       </ul>
                     </li>
                   </ul>
-                  <div style="font-size:12px; color:#ccc; text-align: right">TA的浏览器信息:{{ curr_kh['ua'] }}</div>
+                  <div style="font-size:12px; color:#ccc; text-align: right" id="curr_kh_ua"></div>
                 </div>
                 <div class="lv-body" id="ms-scrollbar-right" style="overflow:scroll; overflow-x: hidden; height:520px;">
                 </div>

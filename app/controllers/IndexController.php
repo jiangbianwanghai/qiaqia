@@ -7,26 +7,7 @@ class IndexController extends ControllerBase
 
     public function indexAction($khid = '')
     {
-        $khtofd = json_decode($this->redis->get("khtofd"), true);
-        $kftokh = json_decode($this->redis->get("kftokh"), true);
-        $kh     = json_decode($this->redis->get("kh"), true);
-        if (!empty($kftokh[$this->view->account])) {
-            $khidarr = (array) $kftokh[$this->view->account];
-            foreach ($khidarr as $key => $value) {
-                $khlist[$value] = $kh[$value];
-            }
-        } else {
-            $khlist = [];
-        }
 
-        $this->view->khlist = $khlist;
-        $curr_kh            = [
-            'uid'    => $khid,
-            'ua'     => $kh[$khid]['ua'],
-            'avatar' => $kh[$khid]['avatar'],
-        ];
-        $this->view->khid    = $khid;
-        $this->view->curr_kh = $curr_kh;
     }
 
     /**
@@ -101,7 +82,7 @@ class IndexController extends ControllerBase
         if (isset($userTable[$email])) {
             if ($userTable[$email]['password'] == $password) {
                 $json = ['code' => 0, 'msg' => null, 'url' => '/'];
-                $auth = serialize(['account' => $email, 'acl_group' => 'Admin']);
+                $auth = serialize(['username' => $userTable[$email]['username'], 'account' => $email, 'acl_group' => 'Admin']);
                 //$this->cookies->set('auth', $auth, time() + 15 * 86400);
                 $this->cookies->set('auth', $auth);
             } else {
@@ -148,13 +129,7 @@ class IndexController extends ControllerBase
         $this->view->setRenderLevel(View::LEVEL_NO_RENDER);
         $log['code'] = 200;
         $log['data'] = null;
-        $kftokh      = json_decode($this->redis->get("kftokh"), true);
-        if (!empty($kftokh[$id])) {
-            $key = $id . ':' . $kftokh[$id];
-        } else {
-            $key = 'system:' . $id;
-        }
-        $key = '1101:' . $id;
+        $key         = $this->view->account . ':' . $id;
         for ($i = 0; $i <= 10; $i++) {
             $item = json_decode($this->redis->lGet($key, $i), true);
             if ($item) {

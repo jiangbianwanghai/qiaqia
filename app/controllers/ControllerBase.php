@@ -8,8 +8,9 @@ class ControllerBase extends Controller
     {
         $this->view->account = null;
         if ($this->cookies->has('auth')) {
-            $auth                = unserialize($this->cookies->get('auth'));
-            $this->view->account = $auth['account'];
+            $auth                 = unserialize($this->cookies->get('auth'));
+            $this->view->account  = $auth['account'];
+            $this->view->username = $auth['username'];
         }
     }
 }

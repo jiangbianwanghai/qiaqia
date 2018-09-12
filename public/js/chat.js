@@ -28,7 +28,6 @@ setTimeout(function(){
 
         //监听是否连接服务器成功触发
         socket.onopen = function () {
-            $("#push_content").append("<div style=\"width:260px;padding-bottom:40px; height:30px;text-align:center; float:left;\">-—— 连接服务器成功 ——-</div>");
             console.log('Connected!');
             var ua = navigator.userAgent.toLowerCase();
             var messageObj = {kh:1,uid:username,ua:ua};
@@ -43,12 +42,12 @@ setTimeout(function(){
               success : function(data) {
                 if (data.code == 200) {
                     if (data.data) {
-                        $("#push_content").append("<div style=\"width:260px;padding-bottom:40px; height:30px;text-align:center; float:left;\">以下是之前的聊天记录<hr style=\"height:1px;border:none;border-top:1px solid #eee;\" /></div>");
+                        $("#push_content").append("<div style=\"width:260px;padding-bottom:10px; height:30px;text-align:center; float:left;\">以下是之前的部分聊天记录，<a href=\"javascript:;\">查看全部</a></div>");
                         for(var p in data.data){
                           if (data.data[p].me) {
-                            $("#push_content").append("<div style=\"color:#7c7c7c;text-align:right;float:right;padding-bottom:20px;\"><div style='text-align:left;width:155px; background:#ecf0f1;padding:10px;padding-right:45px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);position:relative;'><div style=\"width:32px;height:32px;position:absolute;top:-10px;right:10px;\"></div>"+data.data[p].msg+"</div><br />"+data.data[p].time+" from me</div>");
+                            $("#push_content").append("<div style=\"color:#7c7c7c;text-align:right;float:right;padding-bottom:20px;\"><div style='text-align:left;width:155px; background:#ecf0f1;padding:10px;border-radius:2px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);position:relative;'>"+data.data[p].msg+"</div><br />"+data.data[p].time+" from me</div>");
                           } else {
-                            $("#push_content").append("<div style=\"color:#7c7c7c;text-align:left;float:left;padding-bottom:20px;\"><div style='width:155px; background:#f5f5f5;padding:10px;padding-left:45px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);position:relative;'><div style=\"width:32px;height:32px;position:absolute;top:-10px;left:10px;\"></div>"+data.data[p].msg+"</div><br />"+data.data[p].time+"</div>");
+                            $("#push_content").append("<div style=\"color:#7c7c7c;text-align:left;float:left;padding-bottom:20px;\"><div style='width:155px; background:#f5f5f5;padding:10px;border-radius:2px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);position:relative;'>"+data.data[p].msg+"</div><br />"+data.data[p].time+"</div>");
                           }
                         }
                         $('#push_content').scrollTop( $('#push_content')[0].scrollHeight );
@@ -90,9 +89,10 @@ setTimeout(function(){
                     $("#push_content").append("<div style=\"padding-top:10px;padding-bottom:10px;background-color:yellow;text-align:center;position:absolute;top:340px;left:0px;opacity:0.6;width:100%;height:20px;color:#ff0000\">"+Eventjson.msg+"</div>");
                 } else {
                     if (Eventjson.me) {
-                        $("#push_content").append("<div style=\"color:#7c7c7c;text-align:right;float:right;padding-bottom:20px;\"><div style='text-align:left;width:155px; background:#ecf0f1;padding:10px;padding-right:45px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);position:relative;'><div style=\"width:32px;height:32px;position:absolute;top:-10px;right:10px;\"></div>"+Eventjson.msg+"</div><br />"+Eventjson.time+" from me</div>");
+                        $("#push_content").append("<div style=\"color:#7c7c7c;text-align:right;float:right;padding-bottom:20px;\"><div style='text-align:left;width:155px; background:#ecf0f1;padding:10px;border-radius:2px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);position:relative;'>"+Eventjson.msg+"</div><br />"+Eventjson.time+" from me</div>");
                     } else {
-                        $("#push_content").append("<div style=\"color:#7c7c7c;text-align:left;float:left;padding-bottom:20px;\"><div style='width:155px; background:#f5f5f5;padding:10px;border-radius:5px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);position:relative;padding-left:45px;'><div style=\"width:32px;height:32px;position:absolute;top:-10px;left:10px;\"></div>"+Eventjson.msg+"</div><br />"+Eventjson.time+"</div>");
+                        lightT()
+                        $("#push_content").append("<div style=\"color:#7c7c7c;text-align:left;float:left;padding-bottom:20px;\"><div style='width:155px; background:#f5f5f5;padding:10px;border-radius:2px;box-shadow: 0 1.5px .5px rgba(0,0,0,.13);position:relative;'>"+Eventjson.msg+"</div><br />"+Eventjson.time+"</div>");
                     }
                 }
             }
@@ -101,7 +101,6 @@ setTimeout(function(){
 
         //与服务器连接断开触发
         socket.onclose = function () {
-            $("#push_content").append("<div style=\"width:260px;padding-bottom:40px; height:30px;text-align:center; float:left;\">-—— 与服务器连接断开 ——-</div>");
             console.log('Lost connection!');
         };
 
@@ -135,3 +134,27 @@ function setCookie(c_name,value,expiredays) {
 ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
 }
 
+function lightT() {
+    var timerArr = showT();
+    setTimeout(function() {//此处是过一定时间后自动消失
+        clearT(timerArr);
+    }, 5000);
+}
+
+function showT() { //有新消息时在title处闪烁提示
+    var step=0, _title = document.title;
+    var timer = setInterval(function() {
+        step++;
+        if (step==3) {step=1};
+        if (step==1) {document.title='【　　　　　　】'+_title};
+        if (step==2) {document.title='【您有新的消息】'+_title};
+    }, 500);
+    return [timer, _title];
+}
+function clearT(timerArr) {
+    //去除闪烁提示，恢复初始title文本
+    if(timerArr) {
+        clearInterval(timerArr[0]);
+        document.title = timerArr[1];
+    };
+}
