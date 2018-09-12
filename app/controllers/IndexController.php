@@ -188,14 +188,16 @@ class IndexController extends ControllerBase
         header('Content-Type:application/json; charset=utf-8');
         $this->view->setRenderLevel(View::LEVEL_NO_RENDER);
         $output['code'] = 200;
-        $output['data'] = null;
+        $output['data'] = '';
         $khtofd         = json_decode($this->redis->get("khtofd"), true);
         $kftokh         = json_decode($this->redis->get("kftokh"), true);
         $kh             = json_decode($this->redis->get("kh"), true);
         if (!empty($kftokh[$this->view->account])) {
             $khidarr = (array) $kftokh[$this->view->account];
             foreach ($khidarr as $key => $value) {
-                $output['data'][] = $kh[$value];
+                if (isset($khtofd[$value])) {
+                    $output['data'][] = $kh[$value];
+                }
             }
         }
         $callback = $_GET['callback'];

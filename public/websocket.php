@@ -240,17 +240,34 @@ $server->on('message', function ($server, $frame) use ($redis) {
 
 $server->on('close', function ($server, $fd) use ($redis) {
     $fdtokf = json_decode($redis->get("fdtokf"), true);
+    $kftofd = json_decode($redis->get("kftofd"), true);
     $fdtokh = json_decode($redis->get("fdtokh"), true);
+    $khtofd = json_decode($redis->get("khtofd"), true);
+
     //客服退出时清理客服连接池
     if (!empty($fdtokf[$fd])) {
+        $tmp = $fdtokf[$fd];
         unset($fdtokf[$fd]);
+        unset($kftofd[$tmp]);
         $redis->set("fdtokf", json_encode($fdtokf));
+        $redis->set("kftofd", json_encode($kftofd));
     }
+
     //客户退出时清理客户连接池
     if (!empty($fdtokh[$fd])) {
+        $khtokf = json_decode($redis->get("khtokf"), true);
+        $currkf = $kftofd[$khtokf[$fdtokh[$fd]]];
+        //发送刷新左侧客户列表信号
+        $flashKhMenu = json_encode(['from' => $fdtokh[$fd], 'op' => 'flash_kh_menu']);
+        $server->push($currkf, $flashKhMenu);
+
+        $tmp = $fdtokh[$fd];
         unset($fdtokh[$fd]);
+        unset($khtofd[$tmp]);
         $redis->set("fdtokh", json_encode($fdtokh));
+        $redis->set("khtofd", json_encode($khtofd));
     }
+
     echo "connection close: {$fd}\n";
 });
 

@@ -1,3 +1,20 @@
+$.ajax({
+  type: "GET",
+  dataType:'jsonp',
+  url: "http://weqia.live/kh/live",
+  success : function(data) {
+    if (data.code == 200) {
+        if (data.data) {
+            var leftmenu = '';
+            for(var p in data.data){
+                leftmenu = leftmenu + "<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\""+data.data[p].avatar+"\"> </div><div class=\"media-body\"><div class=\"lv-title\"><a href=\"/#chat!"+data.data[p].uid+"\">"+data.data[p].uid+"</a></div><div class=\"lv-small\">"+data.data[p].ua+"</div></div></div>";
+            }
+            $("#kh_left_menu").html(leftmenu);
+        }
+    }
+  }
+})
+
 $('#ms-scrollbar-right').scrollTop( $('#ms-scrollbar-right')[0].scrollHeight );
 
 var socket = new WebSocket('ws://192.168.1.110:9502');
@@ -70,6 +87,8 @@ socket.onmessage = function (event) {
                         leftmenu = leftmenu + "<div class=\"lv-item media\"><div class=\"lv-avatar pull-left\"> <img src=\"/images/"+data.data[p].avatar+"\" alt=\""+data.data[p].avatar+"\"> </div><div class=\"media-body\"><div class=\"lv-title\"><a href=\"/#chat!"+data.data[p].uid+"\">"+data.data[p].uid+"</a></div><div class=\"lv-small\">"+data.data[p].ua+"</div></div></div>";
                     }
                     $("#kh_left_menu").html(leftmenu);
+                } else {
+                    $("#kh_left_menu").text('');
                 }
             }
           }
